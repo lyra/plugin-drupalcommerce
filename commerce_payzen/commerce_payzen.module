@@ -1,0 +1,701 @@
+<?php
+#####################################################################################################
+#
+#					Module pour la plateforme de paiement PayZen
+#						Version : 1.1a (révision 50229)
+#									########################
+#					Développé pour Drupal_Commerce
+#						Version : 7.x-1.1
+#						Compatibilité plateforme : V2
+#									########################
+#					Développé par Lyra Network
+#						http://www.lyra-network.com/
+#						12/08/2013
+#						Contact : support@payzen.eu
+#
+#####################################################################################################
+
+/**
+ * @file
+ * Implements PayZen payment services for use in Drupal Commerce.
+ */
+
+// Load PAYZEN API
+if (!class_exists('PayzenApi')) {
+	include_once DRUPAL_ROOT.'/'.drupal_get_path('module', 'commerce_payzen').'/includes/commerce_payzen_api.inc';
+}
+
+/**
+ * Implements hook_commerce_payment_method_info().
+ */
+function commerce_payzen_commerce_payment_method_info() {
+  	$payment_methods = array();
+
+  	$path = base_path() . drupal_get_path('module', 'commerce_payzen');
+  	$display_img = '<img src="' . $path . '/payzen.jpg" alt="PayZen" title="' . commerce_payzen_t('PayZen') . '" class="commerce-payzen-logo" > ';
+  	$display_title = commerce_payzen_t('PayZen'); // you can update or disable method label here
+  	
+	$payment_methods['payzen'] = array(
+	    'base' => 'commerce_payzen',
+	    'title' => commerce_payzen_t('PayZen'),
+	    'short_title' => commerce_payzen_t('PayZen'),
+	    'display_title' => $display_img . $display_title,
+	    'description' => commerce_payzen_t('Integrates PayZen secured payment system.'),
+	  	'terminal' => FALSE,
+	    'offsite' => TRUE,
+	    'offsite_autoredirect' => TRUE
+	);
+	
+	return $payment_methods;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_payzen_menu() {
+	$items = array();
+
+  	// Define an always accessible path to receive payzen payment results.
+  	$items['commerce_payzen/process/%commerce_payment_method_instance'] = array(
+    	'page callback' => 'commerce_payzen_process_payment',
+    	'page arguments' => array(2),
+    	'access callback' => TRUE,
+    	'type' => MENU_CALLBACK
+  	);
+
+  	return $items;
+}
+
+
+/**
+ * Payment method callback: settings form.
+ */
+function commerce_payzen_settings_form($settings = NULL) {
+	$form = array();
+	
+	$parts = array(
+    	'commerce_payzen',
+    	'process',
+		'payzen|commerce_payment_payzen'
+  	);
+  	
+  	$url_check = urldecode(url(implode('/', $parts), array('absolute' => TRUE)));
+  	
+  	$payzen = new PayzenApi('UTF-8');
+  
+  	// Merge default settings into the stored settings array.
+  	$settings = (array) $settings + array(
+    	'payzen_module_param' =>array(
+	     	'payzen_site_id'=> '12345678',  
+	     	'payzen_key_test'=> '1111111111111111',
+		 	'payzen_key_prod'=> '2222222222222222',
+		 	'payzen_ctx_mode'=> 'TEST', 
+	  	 	'payzen_platform_url'=> 'https://secure.payzen.eu/vads-payment/'
+ 	 	),
+	  	'payzen_payment_page'=>array(
+			 'payzen_language'=> 'fr',
+			 'payzen_available_languages'=> '',
+			 'payzen_capture_delay'=> '',
+			 'payzen_validation_mode'=> '',
+			 'payzen_payment_cards'=> ''
+	  		 
+		),
+		'payzen_selective_3ds'=>array(
+			'payzen_3ds_min'=> ''
+		),
+		'payzen_amount_restrictions'=>array(
+			 'payzen_amount_min'=> '',
+			 'payzen_amount_max'=> ''
+		),
+		'payzen_return_to_shop'=>array(  
+			 'payzen_redirect_enabled'=> '0',
+			 'payzen_redirect_success_timeout'=> '5',
+			 'payzen_redirect_success_message'=> 'Redirection vers la boutique dans quelques instants...',
+			 'payzen_redirect_error_timeout'=> '5',
+			 'payzen_redirect_error_message'=> 'Redirection vers la boutique dans quelques instants...',
+			 'payzen_return_mode'=> 'GET'
+	 	)
+  	);
+
+	$form['payzen_module_info'] = array(
+  		'#theme' => 'fieldset',
+	    '#title' => commerce_payzen_t('Module information'),
+	 	'#collapsible' => TRUE,
+	 	'#collapsed'=> FALSE,
+	    '#attributes' => array(
+	    	'class' => array('collapsible'),
+		),
+		'#children' => '<table >
+			<tr>
+		    	<td style="width: 200px; text-align:right;">'.commerce_payzen_t('Developed by :') . '</td>
+		        <td><a href="http://www.lyra-network.com/" target="_blank">Lyra network</a></td>
+		    </tr>
+		    <tr>
+		      	<td style="width: 200px; text-align:right;">'. commerce_payzen_t('Contact us :') .'</td>
+		        <td><a href="mailto:support@payzen.eu">support@payzen.eu</a></td>
+		    </tr>
+		    <tr>
+		        <td style="width: 200px; text-align:right;">'. commerce_payzen_t('Module version :') .'</td>
+		        <td>1.1a</td>
+		    </tr>
+		    <tr>
+		        <td style="width: 200px; text-align:right;">'. commerce_payzen_t('Platform version :') .'</td>
+		        <td>V2</td>
+		    </tr>
+		    <tr>
+		        <td style="width: 200px; text-align:right;">'. commerce_payzen_t('Tested with :') .'</td>
+		        <td>Drupal_Commerce 7.x-1.1</td>
+			</tr>
+		</table>'
+	);
+
+	$form['payzen_module_param'] = array(
+		'#type' => 'fieldset',
+	    '#title' => commerce_payzen_t('Payment gateway access'),
+	 	'#collapsible' => TRUE,
+	 	'#collapsed'=> FALSE,
+	);
+  	$form['payzen_module_param']['payzen_site_id'] = array(
+	    '#type' => 'textfield',
+	  	'#size' => '20',
+	    '#title' => commerce_payzen_t('Site ID'),
+	    '#description' => commerce_payzen_t('The identifier provided by your bank'),
+	    '#default_value' => $settings['payzen_module_param']['payzen_site_id'],
+	    '#required' => TRUE,
+  	);
+  	$form['payzen_module_param']['payzen_key_test'] = array(
+	    '#type' => 'textfield',
+	 	'#size' => '30',
+	    '#title' => commerce_payzen_t('Certificate in test mode'),
+	    '#description' => commerce_payzen_t('Certificate provided by your bank for test (Available on the back-office PayZen)'),
+	    '#default_value' => $settings['payzen_module_param']['payzen_key_test'],
+	    '#required' => TRUE,
+  	);
+ 	$form['payzen_module_param']['payzen_key_prod'] = array(
+	    '#type' => 'textfield',
+	  	'#size' => '30',
+	    '#title' => commerce_payzen_t('Certificate in production mode'),
+	    '#description' => commerce_payzen_t('Certificate provided by your bank (Available on the back-office PayZen after validation)'),
+	    '#default_value' => $settings['payzen_module_param']['payzen_key_prod'],
+	    '#required' => TRUE,
+  	);
+  	$form['payzen_module_param']['payzen_ctx_mode'] = array(
+	  	'#type' => 'radios',
+	    '#title' => commerce_payzen_t('Mode'),
+	    '#description' => commerce_payzen_t('The context mode of this module'),
+	    '#options' => array( 'TEST'=>'TEST', 'PRODUCTION'=>'PRODUCTION'),
+	    '#default_value' => $settings['payzen_module_param']['payzen_ctx_mode'], 
+	    '#required' => TRUE, 
+  	);
+   	$form['payzen_module_param']['payzen_platform_url'] = array(
+	    '#type' => 'textfield',
+	    '#title' => commerce_payzen_t('Platform URL'),
+	    '#description' => commerce_payzen_t('Link to the payment platform'),
+	    '#default_value' => $settings['payzen_module_param']['payzen_platform_url'],
+	    '#required' => TRUE,
+  	);
+  
+  	
+  	$form['payzen_payment_page'] = array(
+		'#type' => 'fieldset',
+	    '#title' => commerce_payzen_t('Payment page'),
+	 	'#collapsible' => TRUE,
+	 	'#collapsed'=> FALSE,
+	);
+  	$form['payzen_payment_page']['payzen_language'] = array(
+	    '#type' => 'select',
+	    '#title' => commerce_payzen_t('Default language'),
+	    '#description' => commerce_payzen_t('Select the language to use on the payment page by default'),
+	  	'#options' => payzen_language_options(),
+	    '#default_value' => $settings['payzen_payment_page']['payzen_language'],
+  	);
+  	$form['payzen_payment_page']['payzen_available_languages'] = array(
+	    '#type' => 'select',
+	  	'#multiple' => 'multiple',
+	    '#title' => commerce_payzen_t('Available Languages'),
+	    '#description' => commerce_payzen_t('Select none to use gateway config'),
+	  	'#options' => payzen_language_options(),
+	    '#default_value' => $settings['payzen_payment_page']['payzen_available_languages'],
+  	);
+  	$form['payzen_payment_page']['payzen_capture_delay'] = array(
+	    '#type' => 'textfield',
+	  	'#size' => '20',
+	    '#title' => commerce_payzen_t('Capture delay'),
+	    '#description' => commerce_payzen_t('The number of days before the bank restoration (adjustable in your back-office PayZen)'),
+    	'#default_value' => $settings['payzen_payment_page']['payzen_capture_delay'],
+  	);
+ 	$form['payzen_payment_page']['payzen_validation_mode'] = array(
+	   	'#type' => 'select',
+	    '#title' => commerce_payzen_t('Validation mode'),
+	    '#description' => commerce_payzen_t('If manual is selected, you will have to confirm payments manually in your back-office PayZen'),
+	    '#options' => payzen_validation_mode_options(),
+	    '#default_value' => $settings['payzen_payment_page']['payzen_validation_mode'],
+  	);
+  	$form['payzen_payment_page']['payzen_payment_cards'] = array(
+  		    '#type' => 'select',
+  		  	'#multiple' => 'multiple',
+  		    '#title' => commerce_payzen_t('Card Types'),
+  		    '#description' => commerce_payzen_t('The card type(s) that can be used for the payment'),
+  		  	'#options' => $payzen->getSupportedCardTypes(),
+  		    '#default_value' => $settings['payzen_payment_page']['payzen_payment_cards'],
+  	);
+  	
+  	$form['payzen_selective_3ds'] = array(
+  			'#type' => 'fieldset',
+  			'#title' => commerce_payzen_t('Selective 3DS'),
+  			'#collapsible' => TRUE,
+  			'#collapsed'=> FALSE,
+  	);  	
+  	$form['payzen_selective_3ds']['payzen_3ds_min'] = array(
+  			'#type' => 'textfield',
+  			'#size' => '20',
+  			'#title' => commerce_payzen_t('Minimum amount to activate 3DS'),
+  			'#description' => commerce_payzen_t('Needs subscription to Selective 3-D Secure option.'),
+  			'#default_value' => $settings['payzen_selective_3ds']['payzen_3ds_min'],
+  	);
+  
+  	$form['payzen_amount_restrictions'] = array(
+		'#type' => 'fieldset',
+	    '#title' => commerce_payzen_t('Amount restrictions'),
+	 	'#collapsible' => TRUE,
+	 	'#collapsed'=> FALSE,
+	);
+  	$form['payzen_amount_restrictions']['payzen_amount_min'] = array(
+	    '#type' => 'textfield',
+	  	'#size' => '20',
+	    '#title' => commerce_payzen_t('Minimum amount'),
+	    '#description' => commerce_payzen_t('Minimum amount for which this payment method is available'),
+	    '#default_value' => $settings['payzen_amount_restrictions']['payzen_amount_min'],
+  	);
+  	$form['payzen_amount_restrictions']['payzen_amount_max'] = array(
+	    '#type' => 'textfield',
+	  	'#size' => '20',
+	    '#title' => commerce_payzen_t('Maximum amount'),
+	    '#description' => commerce_payzen_t('Maximum amount for which this payment method is available'),
+    	'#default_value' => $settings['payzen_amount_restrictions']['payzen_amount_max'],
+	);
+  
+	
+  	$form['payzen_return_to_shop'] = array(
+		'#type' => 'fieldset',
+	    '#title' => commerce_payzen_t('Return to shop'),
+	 	'#collapsible' => TRUE,
+	 	'#collapsed'=> FALSE
+	);
+    $form['payzen_return_to_shop']['payzen_redirect_enabled'] = array(
+	    '#type' => 'radios',
+	    '#title' => commerce_payzen_t('Automatic forward'),
+	    '#description' => commerce_payzen_t('If enabled, the client is automatically forwarded to your site at the end of the payment process'),
+	    '#options' => payzen_automatic_forward_options(),
+	    '#default_value' => $settings['payzen_return_to_shop']['payzen_redirect_enabled'],
+  	);
+  	$form['payzen_return_to_shop']['payzen_redirect_success_timeout'] = array(
+	    '#type' => 'textfield',
+	  	'#size' => '20',
+	    '#title' => commerce_payzen_t('Success forward timeout'),
+	    '#description' => commerce_payzen_t('Time in seconds (0-300) before the client is automatically forwarded to your site when the payment was successful'),
+	    '#default_value' => $settings['payzen_return_to_shop']['payzen_redirect_success_timeout'],
+  	);
+ 	$form['payzen_return_to_shop']['payzen_redirect_success_message'] = array(
+	    '#type' => 'textfield',
+	    '#title' => commerce_payzen_t('Success forward message'),
+	    '#description' => commerce_payzen_t('Message posted on the payment platform before forwarding when the payment was successful'),
+	    '#default_value' => $settings['payzen_return_to_shop']['payzen_redirect_success_message']
+  	);
+  	$form['payzen_return_to_shop']['payzen_redirect_error_timeout'] = array(
+	    '#type' => 'textfield',
+	  	'#size' => '20',
+	    '#title' => commerce_payzen_t('Failure forward timeout'),
+	    '#description' => commerce_payzen_t('Time in seconds (0-300) before the client is automatically forwarded to your site when the payment failed'),
+	    '#default_value' => $settings['payzen_return_to_shop']['payzen_redirect_error_timeout'],
+  	);
+  	$form['payzen_return_to_shop']['payzen_redirect_error_message'] = array(
+	    '#type' => 'textfield',
+	    '#title' => commerce_payzen_t('Failure forward message'),
+	    '#description' => commerce_payzen_t('Message posted on the payment platform before forwarding when the payment failed'),
+	    '#default_value' => $settings['payzen_return_to_shop']['payzen_redirect_error_message']
+  	);
+  	$form['payzen_return_to_shop']['payzen_return_mode'] = array(
+	   	'#type' => 'select',
+	    '#title' => commerce_payzen_t('Return mode'),
+	    '#description' => commerce_payzen_t('Method that will be used for transmitting the payment result from the payment gateway to your store'),
+	    '#options' => payzen_return_mode_options(),
+	    '#default_value' => $settings['payzen_return_to_shop']['payzen_return_mode'],
+  	);
+   	$form['payzen_return_to_shop']['payzen_url_check'] = array(
+	    '#type' => 'textfield',
+	    '#attributes' => array('readonly' => 'readonly'),
+	    '#title' => commerce_payzen_t('Server URL to copy in your store back-office'),
+	    '#default_value' => $url_check,
+	    '#value' => $url_check
+  	);
+  	
+  	return $form;
+}
+
+/**
+ * Implements hook_form_commerce_checkout_form_alter().
+ */
+function commerce_payzen_form_commerce_checkout_form_alter(&$form, &$form_state) {
+	// If this checkout form contains the payment method radios...
+	if (!empty($form['commerce_payment']['payment_method']['#options'])) {
+		
+		// Loop over its options array looking for a PayZen option
+		foreach (array_keys($form['commerce_payment']['payment_method']['#options']) as $key) {
+			list($method_id, $rule_name) = explode('|', $key);
+
+			// If we find PayZen, include its CSS on the form and exit the loop
+			if ($method_id == 'payzen') {
+				$form['commerce_payment']['payment_method']['#attached']['css'][] = drupal_get_path('module', 'commerce_payzen') . '/theme/payzen.css';
+				break;
+			}
+		}
+	}
+}
+
+/**
+ * Payment method callback: prepare form to redirect to payment platform.
+ */
+function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_method) {
+	$payzen = new PayzenApi('UTF-8');
+	
+   	// price array
+   	$price = $order->commerce_order_total['und'][0];
+   	
+   	// Currency
+   	$currency_obj = $payzen->findCurrencyByAlphaCode($price['currency_code']);
+    if($currency_obj == null) {
+		drupal_set_message(commerce_payzen_t('The used currency is not supported.'), 'error');
+		return FALSE;
+	} 
+		
+	// Set payment platform access parameters
+	foreach ($payment_method['settings']['payzen_module_param'] as $name => $value) {
+		$paramName = substr($name, strpos($name, '_') + 1);
+		$payzen->set($paramName, $value);
+	}
+	
+	// Set return to shop parameters
+	foreach ($payment_method['settings']['payzen_return_to_shop'] as $name => $value) {
+		$paramName = substr($name, strpos($name, '_') + 1);
+		$payzen->set($paramName, $value);
+	}
+	
+	// Return URL
+	$return_url = url('checkout/' . $order->order_id . '/payment/return/' . $order->data['payment_redirect_key'], array('absolute' => TRUE));
+	$payzen->set('url_return', $return_url);
+	
+	// Set payment page parameters
+	$payzen->set('capture_delay', $payment_method['settings']['payzen_payment_page']['payzen_capture_delay']);
+	$payzen->set('validation_mode', $payment_method['settings']['payzen_payment_page']['payzen_validation_mode']);
+	
+	$current_lang = language_default()->language;
+	$default_lang = $payment_method['settings']['payzen_payment_page']['payzen_language'];
+	$lang = $payzen->isSupportedLanguage($current_lang) ? $current_lang : $default_lang;
+	$payzen->set('language', $lang);
+	
+	$languages = $payment_method['settings']['payzen_payment_page']['payzen_available_languages'];
+	$available_languages = null;
+	if (isset($languages) && !empty($languages)) {
+		$available_languages = is_array($languages) ? implode(';', $languages) : $languages;
+	}
+	$payzen->set('available_languages', $available_languages);
+	
+	$cards = $payment_method['settings']['payzen_payment_page']['payzen_payment_cards'];
+	$payment_cards = null;
+	if (isset($cards) && !empty($cards)) {
+		$payment_cards = is_array($cards) ? implode(';', $cards) : $cards;
+	}
+	$payzen->set('payment_cards', $payment_cards);
+	
+	// activate 3ds ?
+	$decimalAmount = commerce_currency_amount_to_decimal($price['amount'], $price['currency_code']);
+	$threeds_mpi = null;
+	$threeds_min_amount = $payment_method['settings']['payzen_selective_3ds']['payzen_3ds_min'];
+	if($threeds_min_amount != '' && $decimalAmount < $threeds_min_amount) {
+		$threeds_mpi = '2';
+	}
+	$payzen->set('threeds_mpi', $threeds_mpi);
+	
+	// Set misc parameters
+	$order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+	$billing_address = $order_wrapper->commerce_customer_billing->commerce_customer_address->value();
+	
+	if(isset($order_wrapper->commerce_customer_shipping) && isset($order_wrapper->commerce_customer_shipping->commerce_customer_address)) {
+		$shipping_address = $order_wrapper->commerce_customer_shipping->commerce_customer_address->value();
+	} else {
+		// if no shipping module installed
+		$shipping_address = $billing_address;
+	}
+	
+	// Get current drupal commerce version
+	$info = system_get_info('module', 'commerce');
+	$version = VERSION . '_' . substr($info['version'], strpos($info['version'], '-') + 1);
+	
+	$order_params = array(
+		'vads_amount' => $price['amount'],
+		'vads_currency'=> $currency_obj->num,
+		'vads_contrib' => 'Drupal_Commerce7.x-1.1_1.1a/' . $version,
+		'vads_order_id' => $order->order_id,
+		'vads_cust_email' => $order->mail,
+		'vads_cust_id' => $order->uid,
+		
+ 		'vads_cust_name' => $billing_address['name_line'],
+		'vads_cust_address' => $billing_address['thoroughfare'] . ' ' . $billing_address['premise'],
+		'vads_cust_state' => $billing_address['sub_premise'],
+		'vads_cust_city' => $billing_address['locality'],
+		'vads_cust_zip' => $billing_address['postal_code'],
+		'vads_cust_country' => $billing_address['country'],
+		
+		'vads_ship_to_name' => $shipping_address['name_line'],
+		'vads_ship_to_street' => $shipping_address['thoroughfare'],
+		'vads_ship_to_street2' => $shipping_address['premise'],
+		'vads_ship_to_state' => $shipping_address['sub_premise'],
+		'vads_ship_to_city' => $shipping_address['locality'],
+		'vads_ship_to_zip' => $shipping_address['postal_code'],
+		'vads_ship_to_country' => $shipping_address['country']
+	);
+	$payzen->setFromArray($order_params);
+
+	// Set payment platform URL as form action 
+	$form['#action'] = $payzen->platformUrl; 
+	
+	foreach ($payzen->getRequestFields() as $field) {
+		if ($field->isFilled()) {
+			$form[$field->getName()] = array('#type' => 'hidden', '#value' => $field->getValue());
+		}
+	}
+	
+	$form['submit'] = array(
+		'#type' => 'submit',
+	    '#value' => commerce_payzen_t('Proceed to PayZen'),
+	);
+	
+	return $form;
+}
+
+/**
+ * Payment method callback: server redirect validation. 
+ */
+function commerce_payzen_process_payment($payment_method) {
+	
+if((array_key_exists('vads_payment_config', $_POST) && stripos($_POST['vads_payment_config'], 'MULTI') !== false) 
+		|| (array_key_exists('vads_contrib', $_POST) && stripos($_POST['vads_contrib'], 'multi') !== false)) {
+			
+		// multi-payment, load appropriate module
+		watchdog(
+				'commerce_payzen',
+				'Order %orderID done with multi payment. Redirect to appropriate module.',
+				array('%orderID' => $_POST['vads_order_id']),
+				WATCHDOG_NOTICE
+		);
+		
+		// load multi module payment method object
+		$multi_payment_method = commerce_payment_method_instance_load('payzenmulti|commerce_payment_payzenmulti');
+		
+		module_invoke('commerce_payzenmulti', 'process_payment', $multi_payment_method);
+		die();
+	};
+	
+	$payzen_response = new PayzenResponse(
+			$_POST, 
+			$payment_method['settings']['payzen_module_param']['payzen_ctx_mode'],
+			$payment_method['settings']['payzen_module_param']['payzen_key_test'],
+			$payment_method['settings']['payzen_module_param']['payzen_key_prod']
+	);
+	
+	if(!$payzen_response->isAuthentified()) {
+		watchdog(
+			'commerce_payzen',
+			'Suspect request sent to commerce_payzen_process_payment, IP : %ip',
+			array('%ip' => $_SERVER['REMOTE_ADDR']),
+			WATCHDOG_ERROR
+		);
+		
+		die($payzen_response->getOutputForGateway('auth_fail'));
+	}
+
+	$order_id = $payzen_response->get('order_id');
+	
+	$order = commerce_order_load($order_id);
+	if(empty($order)) {
+		watchdog(
+			'commerce_payzen',
+			'Payment check attempted on non existing order : %orderID',
+			array('%orderID' => $order_id),
+			WATCHDOG_ERROR
+		);
+		
+		die($payzen_response->getOutputForGateway('order_not_found'));
+	}
+	
+	if($order->status === 'checkout_payment') {
+		// Order waiting for payment confirmation
+		watchdog('commerce_payzen', $payzen_response->getLogString(), array(), WATCHDOG_INFO);
+		
+		if ($payzen_response->isAcceptedPayment()) {
+            echo($payzen_response->getOutputForGateway('payment_ok'));
+            commerce_payzen_process_transaction($order, $payment_method['instance_id'], COMMERCE_PAYMENT_STATUS_SUCCESS, $payzen_response);
+            die();
+		} else {
+        	echo ($payzen_response->getOutputForGateway('payment_ko'));
+           	commerce_payzen_process_transaction($order, $payment_method['instance_id'], COMMERCE_PAYMENT_STATUS_FAILURE, $payzen_response);
+           	die();
+		}
+	} else {
+		$success_order_statuses = array ('pending', 'processing', 'completed');
+		
+		// Order already processed
+		if (in_array($order->status, $success_order_statuses) && $payzen_response->isAcceptedPayment()) {
+			die($payzen_response->getOutputForGateway('payment_ok_already_done'));
+		} elseif (!in_array($order->status, $success_order_statuses) && !$payzen_response->isAcceptedPayment()) {
+			die($payzen_response->getOutputForGateway('payment_ko_already_done'));
+	 	} else {
+			die($payzen_response->getOutputForGateway('payment_ko_on_order_ok'));
+		}
+	}
+}
+
+/**
+ * Payment method callback: redirect form return validation.
+ */
+function commerce_payzen_redirect_form_validate($order, $payment_method) {
+	$payzen_response = new PayzenResponse(
+			$_REQUEST,
+			$payment_method['settings']['payzen_module_param']['payzen_ctx_mode'],
+			$payment_method['settings']['payzen_module_param']['payzen_key_test'],
+			$payment_method['settings']['payzen_module_param']['payzen_key_prod']
+	);
+	
+	if(!$payzen_response->isAuthentified()) {  
+		watchdog(
+			'commerce_payzen',
+			'Suspect request sent to commerce_payzen_redirect_form_validate, IP : %ip',
+			array('%ip' => $_SERVER['REMOTE_ADDR']),
+			WATCHDOG_ERROR
+		);
+		drupal_set_message(commerce_payzen_t('An error has occured in the payment process.'), 'error');
+		return FALSE;
+	}
+	
+	if(empty($order) || !$order->order_id) {
+		watchdog(
+			'commerce_payzen',
+			'Payment check attempted on non existing order : %orderID',
+			array('%orderID' => $payzen_response->get('order_id')),
+			WATCHDOG_ERROR
+		);
+		
+		drupal_set_message(commerce_payzen_t('An error has occured in the payment process.'), 'error');
+		return FALSE;
+	}
+	
+	if($payment_method['settings']['payzen_module_param']['payzen_ctx_mode'] == 'TEST') {
+		$message = '<p><u>'.commerce_payzen_t('GOING INTO PRODUCTION').'</u></p>';
+		$message .= commerce_payzen_t('You want to know how to put your shop into production mode, please go to this URL :');
+		$message .= '&nbsp;<a href="https://secure.payzen.eu/html/faq/prod" target="_blank">https://secure.payzen.eu/html/faq/prod</a>';
+		
+		drupal_set_message($message, 'notice');
+	}
+	
+	if($order->status === 'checkout_payment') {
+		// Order waiting for payment confirmation
+		watchdog('commerce_payzen', $payzen_response->getLogString(), array(), WATCHDOG_INFO);
+		
+		// Mode TEST warning : Check URL not correctly called
+		if($payment_method['settings']['payzen_module_param']['payzen_ctx_mode'] == 'TEST') {
+			$message = commerce_payzen_t("The automatic notification (peer to peer connection between the payment platform and your shopping cart solution) hasn't worked. Have you correctly set up the server URL in your PayZen back-office ?");
+			$message .= "<br />";
+			$message .= commerce_payzen_t("For understanding the problem, please read the documentation of the module : <br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;To read carefully before going further&raquo;<br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;Server URL settings&raquo;");
+			
+			drupal_set_message($message, 'warning');
+		}
+		
+		if ($payzen_response->isAcceptedPayment()) {
+			commerce_payzen_process_transaction($order, $payment_method['instance_id'], COMMERCE_PAYMENT_STATUS_SUCCESS, $payzen_response);
+			
+			return TRUE;
+		} else {
+			commerce_payzen_process_transaction($order, $payment_method['instance_id'], COMMERCE_PAYMENT_STATUS_FAILURE, $payzen_response);
+			return FALSE;
+		}
+	} else {
+		// Order already processed
+	 	if($payzen_response->isAcceptedPayment()) {
+	 		return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+}
+
+/**
+ * Payment method callback: create or save transaction.
+ */
+function commerce_payzen_process_transaction($order, $payment_method, $status, $resp) {
+  	$transaction = commerce_payment_transaction_new('payzen', $order->order_id);
+	
+	$transaction->instance_id = $payment_method;
+	$transaction->status = $status;
+	$transaction->uid = $order->uid;
+	
+	// payment amount details
+	$transaction->amount = $order->commerce_order_total[LANGUAGE_NONE][0]['amount'];
+	$transaction->currency_code = $order->commerce_order_total[LANGUAGE_NONE][0]['currency_code'];
+	
+	// remote payment info 
+	$msg = $resp->message;
+	if($resp->code == 30) {
+		$msg .= '<br/>'.$resp->extraMessage;
+	}
+	if(!empty($resp->authMessage)) {
+		$msg .= '<br/>'.$resp->authMessage;
+	}
+	
+	$transaction->remote_status = $resp->code ; 
+	$transaction->remote_id = $resp->get('trans_id');
+	$transaction->message = $msg ; 
+	$transaction->payload = $resp->raw_response;
+	
+	commerce_payment_transaction_save($transaction);
+	
+	if ($status == COMMERCE_PAYMENT_STATUS_SUCCESS) {
+		commerce_payment_redirect_pane_next_page($order);
+	} else {
+		commerce_payment_redirect_pane_previous_page($order);
+	}
+}
+
+function commerce_payzen_t($text, array $args = array()) {
+	return t($text, $args, array('context' => 'commerce_payzen'));
+}
+
+function payzen_language_options() {
+	$payzen = new PayzenApi('UTF-8');
+	$languages = array();
+	
+	foreach ($payzen->getSupportedLanguages() as $code => $label) {
+		$languages[$code] = commerce_payzen_t($label); 
+	}
+	
+	return $languages;
+}
+
+function payzen_validation_mode_options() {
+	return array(
+			'' => commerce_payzen_t('Back-office configuration'), 
+			'0' => commerce_payzen_t('Automatic'),
+			'1' => commerce_payzen_t('Manual')
+	);
+}
+
+function payzen_automatic_forward_options() {
+	return array(
+			'0' => commerce_payzen_t('No'), 
+			'1' => commerce_payzen_t('Yes')
+	);
+}
+
+function payzen_return_mode_options() {
+	return drupal_map_assoc(array('GET', 'POST'));
+}

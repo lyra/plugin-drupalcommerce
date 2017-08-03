@@ -1,0 +1,388 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Drupal Commerce PayZen (7.x-1.1a)\n"
+"POT-Creation-Date: 2013-05-05 13:26-0000\n"
+"PO-Revision-Date: 2013-05-05 13:33-0000\n"
+"Language-Team: Lyra Network <support@payzen.eu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "French"
+msgstr "Français"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "German"
+msgstr "Allemand"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "English"
+msgstr "Anglais"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "Spanish"
+msgstr "Espagnol"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "Chinese"
+msgstr "Chinois"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "Italian"
+msgstr "Italien"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "Japanese"
+msgstr "Japonais"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "Portuguese"
+msgstr "Portugais"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "Dutch"
+msgstr "Néerlandais"
+
+#: commerce_payzen.module:15
+msgctxt "commerce_payzen"
+msgid "Swedish"
+msgstr "Suédois"
+
+#: commerce_payzen.module:19
+msgctxt "commerce_payzen"
+msgid "Back-office configuration"
+msgstr "Configuration outil de gestion de caisse"
+
+#: commerce_payzen.module:19
+msgctxt "commerce_payzen"
+msgid "Automatic"
+msgstr "Automatique"
+
+#: commerce_payzen.module:19
+msgctxt "commerce_payzen"
+msgid "Manual"
+msgstr "Manuel"
+
+#: commerce_payzen.module:27
+msgctxt "commerce_payzen"
+msgid "No"
+msgstr "Non"
+
+#: commerce_payzen.module:27
+msgctxt "commerce_payzen"
+msgid "Yes"
+msgstr "Oui"
+
+#: commerce_payzen.module:41
+#: commerce_payzen.module:42
+#: commerce_payzen.module:46
+#: commerce_payzen.module:47
+msgctxt "commerce_payzen"
+msgid "PayZen"
+msgstr "PayZen"
+
+#: commerce_payzen.module:49
+msgctxt "commerce_payzen"
+msgid "Integrates PayZen secured payment system."
+msgstr "Intègre le système de paiement sécurisé  PayZen."
+
+#: commerce_payzen.module:125
+msgctxt "commerce_payzen"
+msgid "Module information"
+msgstr "Informations sur le module"
+
+#: commerce_payzen.module:133
+msgctxt "commerce_payzen"
+msgid "Developed by :"
+msgstr "Développé par :"
+
+#: commerce_payzen.module:137
+msgctxt "commerce_payzen"
+msgid "Contact us :"
+msgstr "Courriel de contact :"
+
+#: commerce_payzen.module:141
+msgctxt "commerce_payzen"
+msgid "Module version :"
+msgstr "Version du module :"
+
+#: commerce_payzen.module:145
+msgctxt "commerce_payzen"
+msgid "Platform version :"
+msgstr "Version de la plateforme :"
+
+#: commerce_payzen.module:149
+msgctxt "commerce_payzen"
+msgid "Tested with :"
+msgstr "Testé avec :"
+
+#: commerce_payzen.module:157
+msgctxt "commerce_payzen"
+msgid "Payment gateway access"
+msgstr "Accès à la plateforme"
+
+#: commerce_payzen.module:164
+msgctxt "commerce_payzen"
+msgid "Site ID"
+msgstr "Identifiant du Site"
+
+#: commerce_payzen.module:165
+msgctxt "commerce_payzen"
+msgid "The identifier provided by your bank"
+msgstr "L'identifiant fourni par votre banque"
+
+#: commerce_payzen.module:172
+msgctxt "commerce_payzen"
+msgid "Certificate in test mode"
+msgstr "Certificat en mode test"
+
+#: commerce_payzen.module:173
+msgctxt "commerce_payzen"
+msgid "Certificate provided by your bank for test (Available on the back-office PayZen)"
+msgstr "Certificat fourni par votre banque pour test (Disponible sur l'outil de gestion de caisse PayZen)"
+
+#: commerce_payzen.module:180
+msgctxt "commerce_payzen"
+msgid "Certificate in production mode"
+msgstr "Certificat en mode production"
+
+#: commerce_payzen.module:181
+msgctxt "commerce_payzen"
+msgid "Certificate provided by your bank (Available on the back-office PayZen after validation)"
+msgstr "Certificat fourni par votre banque (Disponible sur l'outil de gestion de caisse PayZen après passage en production)"
+
+#: commerce_payzen.module:187
+msgctxt "commerce_payzen"
+msgid "Mode"
+msgstr "Mode"
+
+#: commerce_payzen.module:188
+msgctxt "commerce_payzen"
+msgid "The context mode of this module"
+msgstr "Mode de fonctionnement du module"
+
+#: commerce_payzen.module:195
+msgctxt "commerce_payzen"
+msgid "Platform URL"
+msgstr "URL de la plateforme"
+
+#: commerce_payzen.module:196
+msgctxt "commerce_payzen"
+msgid "Link to the payment platform"
+msgstr "URL vers laquelle le client sera redirigé pour le paiement"
+
+#: commerce_payzen.module:204
+msgctxt "commerce_payzen"
+msgid "Payment page"
+msgstr "Page de paiement"
+
+#: commerce_payzen.module:210
+msgctxt "commerce_payzen"
+msgid "Default language"
+msgstr "Langue par défaut"
+
+#: commerce_payzen.module:211
+msgctxt "commerce_payzen"
+msgid "Select the language to use on the payment page by default"
+msgstr "Sélectionner la langue par défaut à utiliser sur la page de paiement"
+
+#: commerce_payzen.module:218
+msgctxt "commerce_payzen"
+msgid "Available Languages"
+msgstr "Langues disponibles"
+
+#: commerce_payzen.module:219
+msgctxt "commerce_payzen"
+msgid "Select none to use gateway config"
+msgstr "Ne rien sélectionner pour utiliser la configuration de la plateforme"
+
+#: commerce_payzen.module:226
+msgctxt "commerce_payzen"
+msgid "Capture delay"
+msgstr "Délai avant remise en banque"
+
+#: commerce_payzen.module:227
+msgctxt "commerce_payzen"
+msgid "The number of days before the bank restoration (adjustable in your back-office PayZen)"
+msgstr "Le nombre de jours avant la remise en banque (paramétrable sur votre back-office PayZen)"
+
+#: commerce_payzen.module:232
+msgctxt "commerce_payzen"
+msgid "Validation mode"
+msgstr "Mode de validation"
+
+#: commerce_payzen.module:233
+msgctxt "commerce_payzen"
+msgid "If manual is selected, you will have to confirm payments manually in your back-office PayZen"
+msgstr "En mode manuel, vous devrez confirmer les paiements dans l'outil de gestion de caisse PayZen"
+
+#: commerce_payzen.module:240
+msgctxt "commerce_payzen"
+msgid "Card Types"
+msgstr "Types de carte"
+
+#: commerce_payzen.module:241
+msgctxt "commerce_payzen"
+msgid "The card type(s) that can be used for the payment"
+msgstr "Le(s) type(s) de carte pouvant être utilisé(s) pour le paiement"
+
+#: commerce_payzen.module:245
+msgctxt "commerce_payzen"
+msgid "Selective 3DS"
+msgstr "3DS sélectif"
+
+#: commerce_payzen.module:249
+msgctxt "commerce_payzen"
+msgid "Minimum amount to activate 3DS"
+msgstr "Montant minimum pour activer le 3DS"
+
+#: commerce_payzen.module:250
+msgctxt "commerce_payzen"
+msgid "Needs subscription to Selective 3-D Secure option."
+msgstr "Nécessite la souscription à l’option 3-D Secure sélectif."
+
+#: commerce_payzen.module:256
+msgctxt "commerce_payzen"
+msgid "Amount restrictions"
+msgstr "Restrictions sur le montant"
+
+#: commerce_payzen.module:263
+msgctxt "commerce_payzen"
+msgid "Minimum amount"
+msgstr "Montant minimum"
+
+#: commerce_payzen.module:264
+msgctxt "commerce_payzen"
+msgid "Minimum amount for which this payment method is available"
+msgstr "Montant minimum pour lequel cette méthode de paiement est disponible"
+
+#: commerce_payzen.module:270
+msgctxt "commerce_payzen"
+msgid "Maximum amount"
+msgstr "Montant maximum"
+
+#: commerce_payzen.module:271
+msgctxt "commerce_payzen"
+msgid "Maximum amount for which this payment method is available"
+msgstr "Montant maximum pour lequel cette méthode de paiement est disponible"
+
+#: commerce_payzen.module:278
+msgctxt "commerce_payzen"
+msgid "Return to shop"
+msgstr "Retour à la boutique"
+
+#: commerce_payzen.module:284
+msgctxt "commerce_payzen"
+msgid "Automatic forward"
+msgstr "Redirection automatique"
+
+#: commerce_payzen.module:285
+msgctxt "commerce_payzen"
+msgid "If enabled, the client is automatically forwarded to your site at the end of the payment process"
+msgstr "Si activée, le client sera redirigé automatiquement vers votre site à la fin du processus de paiement"
+
+#: commerce_payzen.module:292
+msgctxt "commerce_payzen"
+msgid "Success forward timeout"
+msgstr "Temps avant redirection (succès)"
+
+#: commerce_payzen.module:293
+msgctxt "commerce_payzen"
+msgid "Time in seconds (0-300) before the client is automatically forwarded to your site when the payment was successful"
+msgstr "Temps en secondes (0-300) avant que le client ne soit redirigé automatiquement vers votre site lorsque le paiement a réussi"
+
+#: commerce_payzen.module:298
+msgctxt "commerce_payzen"
+msgid "Success forward message"
+msgstr "Message avant redirection (succès)"
+
+#: commerce_payzen.module:299
+msgctxt "commerce_payzen"
+msgid "Message posted on the payment platform before forwarding when the payment was successful"
+msgstr "Message affiché sur la plateforme de paiement avant redirection lorsque le paiement a réussi"
+
+#: commerce_payzen.module:305
+msgctxt "commerce_payzen"
+msgid "Failure forward timeout"
+msgstr "Temps avant redirection (échec)"
+
+#: commerce_payzen.module:306
+msgctxt "commerce_payzen"
+msgid "Time in seconds (0-300) before the client is automatically forwarded to your site when the payment failed"
+msgstr "Temps en secondes (0-300) avant que le client ne soit redirigé automatiquement vers votre site lorsque le paiement a échoué"
+
+#: commerce_payzen.module:311
+msgctxt "commerce_payzen"
+msgid "Failure forward message"
+msgstr "Message avant redirection (échec)"
+
+#: commerce_payzen.module:312
+msgctxt "commerce_payzen"
+msgid "Message posted on the payment platform before forwarding when the payment failed"
+msgstr "Message affiché sur la plateforme de paiement avant redirection, lorsque le paiement a échoué"
+
+#: commerce_payzen.module:317
+msgctxt "commerce_payzen"
+msgid "Return mode"
+msgstr "Mode de retour"
+
+#: commerce_payzen.module:318
+msgctxt "commerce_payzen"
+msgid "Method that will be used for transmitting the payment result from the payment gateway to your store"
+msgstr "Façon dont le client transmettra le résultat du paiement lors de son retour sur la boutique"
+
+#: commerce_payzen.module:325
+msgctxt "commerce_payzen"
+msgid "Server URL to copy in your store back-office"
+msgstr "URL serveur à copier dans l'outil de gestion de caisse"
+
+#: commerce_payzen.module:365
+msgctxt "commerce_payzen"
+msgid "The used currency is not supported."
+msgstr "La devise utilisée n'est pas supportée."
+
+#: commerce_payzen.module:467
+msgctxt "commerce_payzen"
+msgid "Proceed to PayZen"
+msgstr "Aller à PayZen"
+
+#: commerce_payzen.module:573
+#: commerce_payzen.module:585
+msgctxt "commerce_payzen"
+msgid "An error has occured in the payment process."
+msgstr "Une erreur est survenue dans le processus de paiement."
+
+#: commerce_payzen.module:590
+msgctxt "commerce_payzen"
+msgid "GOING INTO PRODUCTION"
+msgstr "PASSAGE EN PRODUCTION"
+
+#: commerce_payzen.module:591
+msgctxt "commerce_payzen"
+msgid "You want to know how to put your shop into production mode, please go to this URL :"
+msgstr "Vous souhaitez savoir comment passer votre boutique en production merci de consulter cette URL :"
+
+#: commerce_payzen.module:602
+msgctxt "commerce_payzen"
+msgid "The automatic notification (peer to peer connection between the payment platform and your shopping cart solution) hasn't worked. Have you correctly set up the server URL in your PayZen back-office ?"
+msgstr "La validation automatique n'a pas fonctionné. Avez-vous configuré correctement l'URL serveur dans l'outil de gestion de caisse PayZen ?"
+
+#: commerce_payzen.module:604
+msgctxt "commerce_payzen"
+msgid "For understanding the problem, please read the documentation of the module : <br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;To read carefully before going further&raquo;<br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;Server URL settings&raquo;"
+msgstr "Afin de comprendre la problématique, reportez vous à la documentation du module : <br />&nbsp;&nbsp;&nbsp;- Chapitre &laquo;A lire attentivement avant d'aller loin&raquo;<br />&nbsp;&nbsp;&nbsp;- Chapitre &laquo;Paramétrage de l'URL serveur&raquo;"
+
+#: commerce_payzen.rules_defaults.inc:27
+msgctxt "commerce_payzen"
+msgid "PayZen - Update the order status on checkout completion"
+msgstr "PayZen - Mettre à jour le statut de la commande à la fin du processus de paiement"
