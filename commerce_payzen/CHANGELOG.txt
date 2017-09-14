@@ -1,0 +1,16 @@
+1.2.0, 2017-09-18
+- Bug fix: update order status only if order is paid by our payment methods.
+- Merging single and multiple payment modules in the same package.
+- Possibility to define several options for payment in installments.
+- Module structure reorganisation (API files and theme).
+- Adding German translations and improve French translations.
+- Adding PayPal sub-module.
+
+1.1a, 2013-08-12:
+- Bug fix: error in encoding special characters.
+
+1.1, 2013-05-06:
+- Bug fix: compatibilty with PayZen multiple payment module.
+
+1.0, 2011-12-06:
+- Module creation.
