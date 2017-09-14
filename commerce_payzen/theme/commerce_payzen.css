@@ -1,0 +1,20 @@
+.commerce-payzen-logo {
+    height: 30px;
+    vertical-align: middle;
+}
+
+.commerce-payzen-option input {
+    margin-left: 20px;
+}
+
+.commerce-payzen-option label {
+    font-weight: bold;
+}
+
+.commerce-payzen-option.singleton input {
+    display: none;
+}
+
+.commerce-payzen-option.singleton label {
+    margin-left: 20px;
+}
