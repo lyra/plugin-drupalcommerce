@@ -1,0 +1,10 @@
+{
+	"name" : "drupal/commerce_payzen",
+	"type" : "drupal-module",
+	"description" : "Provides PayZen payment services integration for Drupal Commerce.",
+	"homepage" : "http://drupal.org/project/commerce_payzen",
+	"license" : "GPL-2.0+",
+	"require" : {
+		"drupal/commerce" : "~2"
+	}
+}

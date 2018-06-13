@@ -1,0 +1,27 @@
+.payzen-ipn-desc {
+    color: red;
+}
+
+.payzen-ipn-desc img {
+    vertical-align: middle;
+    padding-right: 7px;
+}
+
+.payzen-multi-warn {
+    background: none repeat scroll 0 0 #FFFFE0;
+     border: 1px solid #E6DB55;
+     margin: 0 0 20px;
+     padding: 10px;
+}
+
+.payzen-doc-links {
+    color: red;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.payzen-doc-links a {
+    margin-left: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}

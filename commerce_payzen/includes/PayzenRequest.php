@@ -1,25 +1,12 @@
 <?php
 /**
- * PayZen V2-Payment Module version 1.2.0 for Drupal_Commerce 7.x-1.x. Support contact : support@payzen.eu.
+ * Copyright (C) 2017-2018 Lyra Network.
+ * This file is part of PayZen for Drupal Commerce.
+ * See COPYING.md for license details.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @author    Lyra Network (http://www.lyra-network.com/)
- * @copyright 2014-2017 Lyra Network and contributors
- * @license   http://www.gnu.org/licenses/gpl.html  GNU General Public License (GPL v3)
- * @category  payment
- * @package   payzen
+ * @author Lyra Network <contact@lyra-network.com>
+ * @copyright 2017-2018 Lyra Network
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
 
 require_once 'PayzenApi.php';
@@ -73,12 +60,12 @@ if (! class_exists('PayzenRequest', false)) {
         private $redirectEnabled;
 
         /**
-         * SHA-1 authentication signature.
+         * Algo used to sign forms.
          *
          * @var string
          * @access private
          */
-        private $signature;
+        private $algo = PayzenApi::ALGO_SHA1;
 
         /**
          * The original data encoding.
@@ -337,6 +324,8 @@ if (! class_exists('PayzenRequest', false)) {
                 return $this->setPlatformUrl($value);
             } elseif ($name == 'vads_redirect_enabled') {
                 return $this->setRedirectEnabled($value);
+            } elseif ($name == 'vads_sign_algo') {
+                return $this->setSignAlgo($value);
             } elseif (key_exists($name, $this->requestParameters)) {
                 return $this->requestParameters[$name]->setValue($value);
             } else {
@@ -394,8 +383,7 @@ if (! class_exists('PayzenRequest', false)) {
         /**
          * Enable/disable vads_redirect_* parameters.
          *
-         * @param mixed $enabled
-         *            false, 0, null, negative integer or 'false' to disable
+         * @param mixed $enabled false, 0, null, negative integer or 'false' to disable
          * @return boolean
          */
         public function setRedirectEnabled($enabled)
@@ -425,6 +413,22 @@ if (! class_exists('PayzenRequest', false)) {
         }
 
         /**
+         * Set signature algorithm.
+         *
+         * @param string $algo
+         * @return boolean
+         */
+        public function setSignAlgo($algo)
+        {
+            if (in_array($algo, PayzenApi::$SUPPORTED_ALGOS)) {
+                $this->algo = $algo;
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
          * Add a product info as request parameters.
          *
          * @param string $label
@@ -432,9 +436,10 @@ if (! class_exists('PayzenRequest', false)) {
          * @param int $qty
          * @param string $ref
          * @param string $type
+         * @param float vat
          * @return boolean
          */
-        public function addProduct($label, $amount, $qty, $ref, $type)
+        public function addProduct($label, $amount, $qty, $ref, $type = null, $vat = null)
         {
             $index = $this->get('nb_products') ? $this->get('nb_products') : 0;
             $ok = true;
@@ -445,6 +450,7 @@ if (! class_exists('PayzenRequest', false)) {
             $ok &= $this->addField('vads_product_qty' . $index, 'Product quantity', '#^[1-9]\d*$#u', false, 255, $qty);
             $ok &= $this->addField('vads_product_ref' . $index, 'Product reference', '#^[A-Za-z0-9]{0,64}$#u', false, 64, $ref);
             $ok &= $this->addField('vads_product_type' . $index, 'Product type', '#^' . implode('|', self::$ACCORD_CATEGORIES) . '$#u', false, 30, $type);
+            $ok &= $this->addField('vads_product_vat' . $index, 'Product tax rate', '#^((\d{1,12})|(\d{1,2}\.\d{1,4}))$#u', false, 12, $vat);
 
             // increment the number of products
             $ok &= $this->set('nb_products', $index + 1);
@@ -469,7 +475,7 @@ if (! class_exists('PayzenRequest', false)) {
          *
          * @return string|boolean
          */
-        public function getCertificate()
+        private function getCertificate()
         {
             switch ($this->requestParameters['vads_ctx_mode']->getValue()) {
                 case 'TEST':
@@ -486,23 +492,18 @@ if (! class_exists('PayzenRequest', false)) {
         /**
          * Generate signature from a list of PayzenField.
          *
-         * @param array[string][PayzenField] $fields
+         * @param array[string][PayzenField] $fields already filtered fields list
+         * @param bool $hashed
          * @return string
          */
-        private function generateSignature($fields = null, $hashed = true)
+        private function generateSignature($fields, $hashed = true)
         {
-            if (! is_array($fields)) {
-                $fields = $this->requestParameters;
-            }
-
             $params = array();
             foreach ($fields as $field) {
-                if ($field->isRequired() || $field->isFilled()) {
-                    $params[$field->getName()] = $field->getValue();
-                }
+                $params[$field->getName()] = $field->getValue();
             }
 
-            return PayzenApi::sign($params, $this->getCertificate(), $hashed);
+            return PayzenApi::sign($params, $this->getCertificate(), $this->algo, $hashed);
         }
 
         /**
