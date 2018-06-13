@@ -1,0 +1,6 @@
+commerce_payzen.notify:
+  path: '/payment/notify/payzen'
+  defaults:
+    _controller: '\Drupal\commerce_payzen\Controller\PaymentNotificationController::notifyPage'
+  requirements:
+    _access: 'TRUE'

@@ -8,16 +8,9 @@
  * @copyright 2017-2018 Lyra Network
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+namespace Drupal\commerce_payzen\PluginForm;
 
-use Drupal\commerce_payzen\Tools;
-
-function commerce_payzen_commerce_payment_gateway_info_alter(&$definitions)
+class StandardForm extends PayzenForm
 {
-    if (! Tools::$pluginFeatures['multi']) {
-        unset($definitions['payzen_multi']);
-    }
 
-    if (! Tools::$pluginFeatures['paypal']) {
-        unset($definitions['payzen_paypal']);
-    }
 }

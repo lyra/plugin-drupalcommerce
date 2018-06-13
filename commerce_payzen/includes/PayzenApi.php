@@ -1,25 +1,12 @@
 <?php
 /**
- * PayZen V2-Payment Module version 1.2.0 for Drupal_Commerce 7.x-1.x. Support contact : support@payzen.eu.
+ * Copyright (C) 2017-2018 Lyra Network.
+ * This file is part of PayZen for Drupal Commerce.
+ * See COPYING.md for license details.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @author    Lyra Network (http://www.lyra-network.com/)
- * @copyright 2014-2017 Lyra Network and contributors
- * @license   http://www.gnu.org/licenses/gpl.html  GNU General Public License (GPL v3)
- * @category  payment
- * @package   payzen
+ * @author Lyra Network <contact@lyra-network.com>
+ * @copyright 2017-2018 Lyra Network
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
 
 require_once 'PayzenCurrency.php';
@@ -32,6 +19,11 @@ if (! class_exists('PayzenApi', false)) {
      */
     class PayzenApi
     {
+
+        const ALGO_SHA1 = 'SHA-1';
+        const ALGO_SHA256 = 'SHA-256';
+
+        public static $SUPPORTED_ALGOS = array(self::ALGO_SHA1, self::ALGO_SHA256);
 
         /**
          * The list of encodings supported by the API.
@@ -235,7 +227,7 @@ if (! class_exists('PayzenApi', false)) {
                 'POSTFINANCE_EFIN' => 'PostFinance mode E-finance', 'RUPAY' => 'RuPay',
                 'SCT' => 'Virement SEPA', 'SDD' => 'Prélèvement SEPA', 'SOFORT_BANKING' => 'Sofort',
                 'TRUFFAUT_CDX' => 'Carte cadeau Truffaut', 'VILLAVERDE' => 'Carte cadeau Villaverde',
-                'VILLAVERDE_SB' => 'Carte cadeau Villaverde - SandBox'
+                'VILLAVERDE_SB' => 'Carte cadeau Villaverde - SandBox', 'ECCARD' => 'EC Card'
             );
         }
 
@@ -244,10 +236,11 @@ if (! class_exists('PayzenApi', false)) {
          *
          * @param array[string][string] $parameters payment platform request/response parameters
          * @param string $key shop certificate
+         * @param string $algo signature algorithm
          * @param boolean $hashed set to false to get the unhashed signature
          * @return string
          */
-        public static function sign($parameters, $key, $hashed = true)
+        public static function sign($parameters, $key, $algo, $hashed = true)
         {
             ksort($parameters);
 
@@ -259,7 +252,19 @@ if (! class_exists('PayzenApi', false)) {
             }
 
             $sign .= $key;
-            return $hashed ? sha1($sign) : $sign;
+
+            if (! $hashed) {
+                return $sign;
+            }
+
+            switch ($algo) {
+                case self::ALGO_SHA1:
+                    return sha1($sign);
+                case self::ALGO_SHA256:
+                    return base64_encode(hash_hmac('sha256', $sign, $key, true));
+                default:
+                    throw new \InvalidArgumentException("Unsupported algorithm passed : {$algo}.");
+            }
         }
 
         /**

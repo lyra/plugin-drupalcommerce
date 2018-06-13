@@ -8,16 +8,17 @@
  * @copyright 2017-2018 Lyra Network
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+namespace Drupal\commerce_payzen;
 
-use Drupal\commerce_payzen\Tools;
-
-function commerce_payzen_commerce_payment_gateway_info_alter(&$definitions)
+class Tools
 {
-    if (! Tools::$pluginFeatures['multi']) {
-        unset($definitions['payzen_multi']);
-    }
+    public static $pluginFeatures = array(
+        'qualif' => false,
+        'prodfaq' => true,
+        'restrictmulti' => false,
+        'shatwo' => false,
 
-    if (! Tools::$pluginFeatures['paypal']) {
-        unset($definitions['payzen_paypal']);
-    }
+        'multi' => true,
+        'paypal' => true
+    );
 }
