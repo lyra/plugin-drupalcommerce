@@ -1,19 +1,19 @@
 <?php
 /**
- * Copyright (C) 2017-2018 Lyra Network.
- * This file is part of PayZen for Drupal Commerce.
- * See COPYING.md for license details.
+ * Copyright © Lyra Network.
+ * This file is part of PayZen for Drupal Commerce. See COPYING.md for license details.
  *
- * @author Lyra Network <contact@lyra-network.com>
- * @copyright 2017-2018 Lyra Network
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
+ * @package   Payzen
+ * @author    Lyra Network <contact@lyra-network.com>
+ * @copyright Lyra Network
+ * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
 namespace Drupal\commerce_payzen\PluginForm;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\commerce_payment\Exception\PaymentGatewayException;
 use Drupal\commerce_payment\PluginForm\PaymentOffsiteForm;
-use Drupal\commerce_payzen\Plugin\Commerce\Constants;
+use Drupal\commerce_payzen\Tools;
 
 class PayzenForm extends PaymentOffsiteForm
 {
@@ -31,7 +31,7 @@ class PayzenForm extends PaymentOffsiteForm
             $form,
             $form_state,
             $request->get('platform_url'),
-            $request->getRequestFieldsArray(),
+            $request->getRequestFieldsArray(false, false),
             PaymentOffsiteForm::REDIRECT_POST
         );
     }
@@ -67,7 +67,7 @@ class PayzenForm extends PaymentOffsiteForm
             throw new PaymentGatewayException($msg);
         }
 
-        // set payment platform access parameters
+        // set payment gateway access parameters
         foreach ($configuration['gateway_access'] as $name => $value) {
             $request->set($name, $value);
         }
@@ -119,7 +119,7 @@ class PayzenForm extends PaymentOffsiteForm
         $commerce_version = substr($info['version'], strpos($info['version'], '-') + 1);
 
         // construct CMS name
-        $cms = Constants::CMS_NAME . Constants::CMS_VERSION;
+        $cms = Tools::CMS_NAME . Tools::CMS_VERSION;
 
         $order = $payment->getOrder();
 

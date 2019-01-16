@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright (C) 2017-2018 Lyra Network.
- * This file is part of PayZen for Drupal Commerce.
- * See COPYING.md for license details.
+ * Copyright © Lyra Network.
+ * This file is part of PayZen for Drupal Commerce. See COPYING.md for license details.
  *
- * @author Lyra Network <contact@lyra-network.com>
- * @copyright 2017-2018 Lyra Network
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
+ * @package   Payzen
+ * @author    Lyra Network <contact@lyra-network.com>
+ * @copyright Lyra Network
+ * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
 namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
 
@@ -83,7 +83,7 @@ class Multi extends Payzen
 
         if (Tools::$pluginFeatures['restrictmulti']) {
             $msg = '<p class="payzen-multi-warn">';
-            $msg .= $this->t('ATTENTION: The payment in installments feature activation is subject to the prior agreement of Société Générale.<br />If you enable this feature while you have not the associated option, an error 07 - PAYMENT_CONFIG will occur and the buyer will not be able to pay.');
+            $msg .= $this->t('ATTENTION: The payment in installments feature activation is subject to the prior agreement of Société Générale.<br />If you enable this feature while you have not the associated option, an error 10000 – INSTALLMENTS_NOT_ALLOWED or 07 - PAYMENT_CONFIG will occur and the buyer will not be able to pay.');
             $msg .= '</p>';
 
             $warn = [
@@ -159,7 +159,7 @@ class Multi extends Payzen
     {
         $multi_cards = [
             'AMEX', 'CB', 'DINERS', 'DISCOVER', 'E-CARTEBLEUE', 'JCB', 'MASTERCARD',
-            'PRV_BDP', 'PRV_BDT', 'PRV_OPT', 'PRV_SOC', 'VISA', 'VISA_ELECTRON'
+            'PRV_BDP', 'PRV_BDT', 'PRV_OPT', 'PRV_SOC', 'VISA', 'VISA_ELECTRON', 'VPAY'
         ];
 
         $cards = [];

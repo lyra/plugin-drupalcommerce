@@ -7,7 +7,7 @@ dependencies:
 core: 8.x
 
 # information about project
-version: "8.x-2.0.0"
+version: "8.x-2.0.1"
 core: "8.x"
 project: "commerce_payzen"
 datestamp: "1511970023"

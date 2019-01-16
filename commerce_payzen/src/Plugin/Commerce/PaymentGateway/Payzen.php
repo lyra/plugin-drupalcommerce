@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright (C) 2017-2018 Lyra Network.
- * This file is part of PayZen for Drupal Commerce.
- * See COPYING.md for license details.
+ * Copyright © Lyra Network.
+ * This file is part of PayZen for Drupal Commerce. See COPYING.md for license details.
  *
- * @author Lyra Network <contact@lyra-network.com>
- * @copyright 2017-2018 Lyra Network
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
+ * @package   Payzen
+ * @author    Lyra Network <contact@lyra-network.com>
+ * @copyright Lyra Network
+ * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
 namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
 
@@ -19,7 +19,6 @@ use Drupal\commerce_payment\Exception\InvalidResponseException;
 use Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\OffsitePaymentGatewayBase;
 use Drupal\Core\Render\Markup;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\commerce_payzen\Plugin\Commerce\Constants;
 use Drupal\commerce_payzen\Tools;
 use Drupal\commerce_price\Price;
 
@@ -33,15 +32,15 @@ abstract class Payzen extends OffsitePaymentGatewayBase
     {
         return [
             'gateway_access' => [
-                'site_id' => Constants::SITE_ID,
-                'key_test' => Constants::KEY_TEST,
-                'key_prod' => Constants::KEY_PROD,
-                'ctx_mode' => Constants::CTX_MODE,
-                'sign_algo' => Constants::SIGN_ALGO,
-                'platform_url' => Constants::GATEWAY_URL
+                'site_id' => Tools::SITE_ID,
+                'key_test' => Tools::KEY_TEST,
+                'key_prod' => Tools::KEY_PROD,
+                'ctx_mode' => Tools::CTX_MODE,
+                'sign_algo' => Tools::SIGN_ALGO,
+                'platform_url' => Tools::GATEWAY_URL
             ],
             'payment_page' => [
-                'language' => Constants::LANGUAGE,
+                'language' => Tools::LANGUAGE,
                 'available_languages' => [],
                 'capture_delay' => '',
                 'validation_mode' => '',
@@ -109,7 +108,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         $form['module_info']['contact_us'] = [
             '#type' => 'item',
             '#title' => $this->t('Contact us'),
-            '#markup' => '<a href="mailto:' . Constants::SUPPORT_EMAIL . '">' . Constants::SUPPORT_EMAIL . '</a>'
+            '#markup' => '<a href="mailto:' . Tools::SUPPORT_EMAIL . '">' . Tools::SUPPORT_EMAIL . '</a>'
         ];
 
         // get current PayZen plugin version
@@ -124,11 +123,11 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         $form['module_info']['gateway_version'] = [
             '#type' => 'item',
             '#title' => $this->t('Gateway version'),
-            '#markup' => Constants::GATEWAY_VERSION
+            '#markup' => Tools::GATEWAY_VERSION
         ];
 
         // get documentation links
-        $pattern = Constants::GATEWAY_CODE . '_' . Constants::CMS_NAME . '_' . Constants::CMS_VERSION . '_v' . $version . '*.pdf';
+        $pattern = Tools::GATEWAY_CODE . '_' . Tools::CMS_NAME . '_' . Tools::CMS_VERSION . '_v' . $version . '*.pdf';
         $filenames = glob(drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . $pattern);
 
         $doc_langs = array(
@@ -151,6 +150,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             foreach ($doc_files as $file => $lang) {
                 $doc .= '<a href="' . base_path() . drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . $file . '" target="_blank">' . $lang . '</a>';
             }
+
             $doc .= '</span>';
 
             $form['module_info']['doc_links'] = [
@@ -160,7 +160,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             ];
         }
 
-        // payment platform access
+        // payment gateway access
         $form['gateway_access'] = [
             '#type' => 'details',
             '#open' => true,
@@ -180,8 +180,8 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             $form['gateway_access']['key_test'] = [
                 '#type' => 'textfield',
                 '#payzen_field' => true,
-                '#title' => $this->t('Certificate in test mode'),
-                '#description' => $this->t('Certificate provided by PayZen for test mode (available in your store Back Office).'),
+                '#title' => $this->t('Key in test mode'),
+                '#description' => $this->t('Key provided by PayZen for test mode (available in PayZen Back Office).'),
                 '#default_value' => $this->configuration['gateway_access']['key_test'],
                 '#attributes' => ['autocomplete' => 'off'],
                 '#required' => true
@@ -191,8 +191,8 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         $form['gateway_access']['key_prod'] = [
             '#type' => 'textfield',
             '#payzen_field' => true,
-            '#title' => $this->t('Certificate in production mode'),
-            '#description' => $this->t('Certificate provided by PayZen (available in your store Back Office after enabling production mode).'),
+            '#title' => $this->t('Key in production mode'),
+            '#description' => $this->t('Key provided by PayZen (available in PayZen Back Office after enabling production mode).'),
             '#default_value' => $this->configuration['gateway_access']['key_prod'],
             '#attributes' => ['autocomplete' => 'off'],
             '#required' => true
@@ -217,10 +217,10 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#type' => 'select',
             '#payzen_field' => true,
             '#title' => $this->t('Signature algorithm'),
-            '#description' => $this->t('Algorithm used to compute the payment form signature. Selected algorithm must be the same as one configured in the PayZen Back Office.<br /><b>The SHA-256 algorithm should not be activated if it is not yet available in the PayZen Back Office, the feature will be available soon.</b>'),
+            '#description' => $this->t('Algorithm used to compute the payment form signature. Selected algorithm must be the same as one configured in the PayZen Back Office.<br /><b>The HMAC-SHA-256 algorithm should not be activated if it is not yet available in the PayZen Back Office, the feature will be available soon.</b>'),
             '#options' => [
                 'SHA-1' => 'SHA-1',
-                'SHA-256' => 'SHA-256'
+                'SHA-256' => 'HMAC-SHA-256'
             ],
             '#default_value' => $this->configuration['gateway_access']['sign_algo']
         ];
@@ -282,9 +282,9 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#type' => 'select',
             '#payzen_field' => true,
             '#title' => $this->t('Validation mode'),
-            '#description' => $this->t('If manual is selected, you will have to confirm payments manually in your PayZen.'),
+            '#description' => $this->t('If manual is selected, you will have to confirm payments manually in your PayZen Back Office.'),
             '#options' => [
-                '' => $this->t('Back Office configuration'),
+                '' => $this->t('PayZen Back Office configuration'),
                 '0' => $this->t('Automatic'),
                 '1' => $this->t('Manual')
             ],
@@ -295,7 +295,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#payzen_field' => true,
             '#multiple' => true,
             '#title' => $this->t('Card Types'),
-            '#description' => $this->t('The card type(s) that can be used for the payment. Select none to use platform configuration.'),
+            '#description' => $this->t('The card type(s) that can be used for the payment. Select none to use gateway configuration.'),
             '#options' => $this->getSupportedPaymentMeans(),
             '#default_value' => $this->configuration['payment_page']['payment_cards']
         ];
@@ -534,8 +534,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         // go into production message
         if (Tools::$pluginFeatures['prodfaq'] && ($this->configuration['gateway_access']['ctx_mode'] === 'TEST')) {
             $message = '<b><u>' . $this->t('GOING INTO PRODUCTION') . '</u></b>';
-            $message .= '<p>' . $this->t('You want to know how to put your shop into production mode, please go to this URL :');
-            $message .= '&nbsp;<a href="' . Constants::PRODFAQ_URL . '" target="_blank">' . Constants::PRODFAQ_URL . '</a></p>';
+            $message .= '<p>' . $this->t('You want to know how to put your shop into production mode, please read chapters « Proceeding to test phase » and « Shifting the shop to production mode » in the documentation of the module.');
 
             drupal_set_message(Markup::create($message), 'status');
         }
@@ -553,15 +552,15 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 if ($this->configuration['gateway_access']['ctx_mode'] === 'TEST') {
                     // test mode warning : IPN URL not correctly called
                     $logger->warning(
-                        "Payment for order #{$orderId} has been processed by client return ! This means the IPN URL did not work."
+                        "Payment for order #{$order->id()} has been processed by client return ! This means the IPN URL did not work."
                     );
 
                     if (\Drupal::state()->get('system.maintenance_mode')) {
                         $message = $this->t('The shop is in maintenance mode. The automatic notification cannot work.');
                     } else {
-                        $message = $this->t('The automatic notification has not worked. Have you correctly set up the notification URL in your PayZen Back Office ?');
+                        $message = $this->t('The automatic validation has not worked. Have you correctly set up the notification URL in your PayZen Back Office ?');
                         $message .= '<br />';
-                        $message .= $this->t('For understanding the problem, please read the documentation of the module : <br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;To read carefully before going further&raquo;<br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;Server URL settings&raquo;');
+                        $message .= $this->t('For understanding the problem, please read the documentation of the module : <br />&nbsp;&nbsp;&nbsp;- Chapter « To read carefully before going further »<br />&nbsp;&nbsp;&nbsp;- Chapter « Notification URL settings »');
                     }
 
                     drupal_set_message(Markup::create($message), 'warning');
@@ -574,6 +573,11 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             if (! $response->isAcceptedPayment()) {
                 throw new DeclineException($response->getLogMessage());
             }
+
+            $checkout_flow = $order->get('checkout_flow')->entity;
+            $checkout_flow_plugin = $checkout_flow->getPlugin();
+            $checkout_flow_plugin->redirectToStep('complete');
+            die();
         }
     }
 
@@ -673,6 +677,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         switch ($response->getTransStatus()) {
             case 'AUTHORISED' :
             case 'CAPTURE_FAILED' :
+            case 'ACCEPTED' :
                 $state = 'authorization';
                 break;
 
@@ -685,6 +690,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             case 'WAITING_AUTHORISATION' :
             case 'UNDER_VERIFICATION' :
             case 'INITIAL' :
+            case 'WAITING_FOR_PAYMENT' :
                 $state = 'pending';
                 break;
 
