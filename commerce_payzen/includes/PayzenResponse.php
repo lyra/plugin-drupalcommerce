@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright (C) 2017-2018 Lyra Network.
- * This file is part of PayZen for Drupal Commerce.
- * See COPYING.md for license details.
+ * Copyright © Lyra Network.
+ * This file is part of PayZen for Drupal Commerce. See COPYING.md for license details.
  *
- * @author Lyra Network <contact@lyra-network.com>
- * @copyright 2017-2018 Lyra Network
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
+ * @package   Payzen
+ * @author    Lyra Network <contact@lyra-network.com>
+ * @copyright Lyra Network
+ * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
 
 require_once 'PayzenApi.php';
@@ -139,7 +139,8 @@ if (! class_exists('PayzenResponse', false)) {
                 'AUTHORISED',
                 'AUTHORISED_TO_VALIDATE',
                 'CAPTURED',
-                'CAPTURE_FAILED' /* capture will be redone */
+                'CAPTURE_FAILED', /* capture will be redone */
+                'ACCEPTED'
             );
 
             return in_array($this->transStatus, $confirmedStatuses) || $this->isPendingPayment();
@@ -156,7 +157,8 @@ if (! class_exists('PayzenResponse', false)) {
                 'INITIAL',
                 'WAITING_AUTHORISATION',
                 'WAITING_AUTHORISATION_TO_VALIDATE',
-                'UNDER_VERIFICATION'
+                'UNDER_VERIFICATION',
+                'WAITING_FOR_PAYMENT'
             );
 
             return in_array($this->transStatus, $pendingStatuses);
@@ -466,11 +468,11 @@ if (! class_exists('PayzenResponse', false)) {
          * @param boolean $appendCode
          * @return string
          */
-        public static function translate($result, $result_type = self::TYPE_RESULT, $lang = 'fr', $appendCode = false)
+        public static function translate($result, $result_type = self::TYPE_RESULT, $lang = 'en', $appendCode = false)
         {
             // if language is not supported, use the domain default language
             if (!key_exists($lang, self::$RESPONSE_TRANS)) {
-                $lang = 'fr';
+                $lang = 'en';
             }
 
             $translations = self::$RESPONSE_TRANS[$lang];
