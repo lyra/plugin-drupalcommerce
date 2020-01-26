@@ -1,30 +1,16 @@
 <?php
 /**
- * PayZen V2-Payment Module version 1.2.0 for Drupal_Commerce 7.x-1.x. Support contact : support@payzen.eu.
+ * Copyright © Lyra Network.
+ * This file is part of PayZen for Drupal Commerce. See COPYING.md for license details.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @author    Lyra Network (http://www.lyra-network.com/)
- * @copyright 2014-2017 Lyra Network and contributors
- * @license   http://www.gnu.org/licenses/gpl.html  GNU General Public License (GPL v3)
- * @category  payment
- * @package   payzen
+ * @author    Lyra Network <https://www.lyra.com>
+ * @copyright Lyra Network
+ * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v3)
  */
 
-function theme_commerce_payzen_backend_multi_options($variables) {
+function theme_commerce_payzen_backend_multi_options($variables)
+{
     drupal_add_js(drupal_get_path('module', 'commerce_payzen') . '/theme/commerce_payzen.admin.js');
-    drupal_add_css(drupal_get_path('module', 'commerce_payzen') . '/theme/commerce_payzen.admin.css');
 
     $multi_options = commerce_payzen_multi_options($variables['element']['#value']);
     $cb_avail = key_exists('CB', commerce_payzen_multi_cards());
@@ -35,7 +21,7 @@ function theme_commerce_payzen_backend_multi_options($variables) {
     $output .= '<button id="commerce_payzen_multi_options_btn"' . (! empty($multi_options) ? ' style="display: none;"' : '')
                     . ' type="button"  onclick= "payzenAddOption(true, \'' . payzen_t('Delete') . '\', ' . ($cb_avail ? 'true' : 'false') . ')" />' . payzen_t('Add') . '</button>';
 
-    $output .= '<table id="commerce_payzen_multi_options_table"' . (empty($multi_options) ? ' style="display: none;"' : '') . ' cellpadding="0" cellspacing="0" class="uc-payzen-table" >
+    $output .= '<table id="commerce_payzen_multi_options_table"' . (empty($multi_options) ? ' style="display: none;"' : '') . ' cellpadding="0" cellspacing="0" class="commerce-payzen-table" >
                     <thead>
                         <tr>
                             <th>' . payzen_t('Label') . '</th>
@@ -85,7 +71,8 @@ function theme_commerce_payzen_backend_multi_options($variables) {
     return $output;
 }
 
-function commerce_payzen_create_text($name, $value, $extra_attributes = '') {
+function commerce_payzen_create_text($name, $value, $extra_attributes = '')
+{
     $output = '<input type="text" name="parameter[payment_method][settings][payment_method][settings][payment_options][payzen_multi_options]' . $name . '" value="' . $value . '" ' . $extra_attributes . '>';
     return $output;
 }
