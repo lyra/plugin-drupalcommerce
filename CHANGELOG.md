@@ -1,10 +1,16 @@
+1.2.1, 2020-01-20
+- Fix links to plugin configuration documentation.
+- Improve plugin translations.
+- [prodfaq] Fix notice about shifting the shop to production mode.
+- [technical] Manage enabled/disabled features by plugin variant.
+
 1.2.0, 2017-09-18
 - Bug fix: update order status only if order is paid by our payment methods.
 - Merging single and multiple payment modules in the same package.
 - Possibility to define several options for payment in installments.
 - Module structure reorganisation (API files and theme).
 - Adding German translations and improve French translations.
-- Adding PayPal sub-module.
+- Adding PayPal submodule.
 
 1.1a, 2013-08-12:
 - Bug fix: error in encoding special characters.

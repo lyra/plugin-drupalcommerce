@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Drupal Commerce PayZen (7.x-1.2.0)\n"
+"Project-Id-Version: Drupal Commerce PayZen (7.x-1.2.1)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-07 09:09+0200\n"
 "PO-Revision-Date: 2017-04-07 09:17+0200\n"
@@ -64,7 +64,7 @@ msgstr "Erste Zahlung"
 
 #: commerce_payzen.module:24
 msgctxt "commerce_payzen"
-msgid "Pay by credit card"
+msgid "Payment by credit card"
 msgstr "Zahlung mit EC-/Kreditkarte"
 
 #: commerce_payzen.module:29 commerce_payzen.module:30
@@ -79,7 +79,7 @@ msgstr "Zahlung mit Kredikarte anhand der Zahlungsplattform PayZen."
 
 #: commerce_payzen.module:42
 msgctxt "commerce_payzen"
-msgid "Pay by credit card in several times"
+msgid "Payment by credit card in installments"
 msgstr "Ratenzahlung mit EC-/Kreditkarte"
 
 #: commerce_payzen.module:47 commerce_payzen.module:48
@@ -94,7 +94,7 @@ msgstr "Ratenzahlung mit Kreditkarte anhand der Zahlungsplattform PayZen."
 
 #: commerce_payzen.module:60
 msgctxt "commerce_payzen"
-msgid "Pay with PayPal"
+msgid "Payment with PayPal"
 msgstr "Zahlung via  PayPal"
 
 #: commerce_payzen.module:65 commerce_payzen.module:66
@@ -104,38 +104,38 @@ msgstr "PayZen - Zahlung via PayPal"
 
 #: commerce_payzen.module:68
 msgctxt "commerce_payzen"
-msgid "Pay with PayPal using PayZen payment platform."
+msgid "Payment with PayPal using PayZen payment platform."
 msgstr "Zahlung mit PayPal anhand der Zahlungsplattform PayZen."
 
 #: commerce_payzen.module:141
 msgctxt "commerce_payzen"
-msgid "Module information"
+msgid "MODULE INFORMATION"
 msgstr "MODULINFORMATIONEN"
 
 #: commerce_payzen.module:149
 msgctxt "commerce_payzen"
-msgid "Developed by :"
-msgstr "Entwickelt von :"
+msgid "Developed by:"
+msgstr "Entwickelt von:"
 
 #: commerce_payzen.module:153
 msgctxt "commerce_payzen"
-msgid "Contact us :"
-msgstr "Kontakt :"
+msgid "Contact us:"
+msgstr "Kontakt:"
 
 #: commerce_payzen.module:157
 msgctxt "commerce_payzen"
-msgid "Module version :"
-msgstr "Modulversion :"
+msgid "Module version:"
+msgstr "Modulversion:"
 
 #: commerce_payzen.module:161
 msgctxt "commerce_payzen"
-msgid "Platform version :"
-msgstr "Plattformversion :"
+msgid "Gateway version"
+msgstr "Kompatibel mit Zahlungsschnittstelle:"
 
 #: commerce_payzen.module:168
 msgctxt "commerce_payzen"
-msgid "CLICK HERE TO VIEW THE MODULE CONFIGURATION DOCUMENTATION"
-msgstr "NÄHERE INFORMATIONEN ZU DIESEM PROBLEM ENTNEHMEN SIE BITTE DER MODULDOKUMENTATION."
+msgid "Click to view the module configuration documentation:"
+msgstr "Klicken Sie, um die Modul-Konfigurationsdokumentation zu finden:"
 
 #: commerce_payzen.module:196
 msgctxt "commerce_payzen"
@@ -149,28 +149,28 @@ msgstr "Shop ID"
 
 #: commerce_payzen.module:204
 msgctxt "commerce_payzen"
-msgid "The identifier provided by your bank."
-msgstr "Kennung, die von Ihrer Bank bereitgestellt wird."
+msgid "The identifier provided by PayZen."
+msgstr "Kennung, die von PayZen bereitgestellt wird."
 
 #: commerce_payzen.module:211
 msgctxt "commerce_payzen"
-msgid "Certificate in test mode"
-msgstr "Zertifikat im Testbetrieb"
+msgid "Key in test mode"
+msgstr "Schlüssel im Testbetrieb"
 
 #: commerce_payzen.module:212
 msgctxt "commerce_payzen"
-msgid "Certificate provided by your bank for test (Available in your store Back Office)."
-msgstr "Zertifikat, das von Ihrer Bank zu Testzwecken bereitgestellt wird (im PayZen-System verfügbar)."
+msgid "Key provided by PayZen for test mode (available in PayZen Back Office)."
+msgstr "Schlüssel, das von PayZen zu Testzwecken bereitgestellt wird (im PayZen Back Office verfügbar)."
 
 #: commerce_payzen.module:219
 msgctxt "commerce_payzen"
-msgid "Certificate in production mode"
-msgstr "Zertifikat im Produktivbetrieb"
+msgid "Key in production mode"
+msgstr "Schlüssel im Produktivbetrieb"
 
 #: commerce_payzen.module:220
 msgctxt "commerce_payzen"
-msgid "Certificate provided by your bank (available in your store Back Office after enabling production mode)."
-msgstr "Von Ihrer Bank bereitgestelltes Zertifikat (im PayZen-System verfügbar)."
+msgid "Key provided by PayZen (available in PayZen Back Office after enabling production mode)."
+msgstr "Von PayZen bereitgestelltes Schlüssel (im PayZen Back Office verfügbar, nachdem der Produktionsmodus aktiviert wurde)."
 
 #: commerce_payzen.module:226
 msgctxt "commerce_payzen"
@@ -194,12 +194,17 @@ msgstr "Link zur Bezahlungsplattform."
 
 #: commerce_payzen.module:242
 msgctxt "commerce_payzen"
-msgid "Instant Payment Notification URL to copy into your store Back Office:"
-msgstr "URL vor Übertragung in Ihr PayZen prüfen:"
+msgid "Instant Payment Notification URL"
+msgstr "Benachrichtigung-URL"
+
+#: commerce_payzen.module:245
+msgctxt "commerce_payzen"
+msgid "URL to copy into your PayZen Back Office > Settings > Notification rules."
+msgstr "URL, die Sie in Ihre PayZen Back Office kopieren sollen > Einstellung > Regeln der Benachrichtigungen."
 
 #: commerce_payzen.module:263
 msgctxt "commerce_payzen"
-msgid "Payment page"
+msgid "PAYMENT PAGE"
 msgstr "ZAHLUNGSSEITE"
 
 #: commerce_payzen.module:269
@@ -230,33 +235,38 @@ msgstr "Einzugsfrist"
 
 #: commerce_payzen.module:286
 msgctxt "commerce_payzen"
-msgid "The number of days before the bank capture (adjustable in your store Back Office)."
-msgstr "Anzahl der Tage bis zum Einzug der Zahlung (Einstellung über Ihr PayZen-System)."
+msgid "The number of days before the bank capture (adjustable in your PayZen Back Office)."
+msgstr "Anzahl der Tage bis zum Einzug der Zahlung (Einstellung über Ihr PayZen Back Office)."
 
 #: commerce_payzen.module:291
 msgctxt "commerce_payzen"
-msgid "Payment validation"
+msgid "Validation mode"
 msgstr "Bestätigungsmodus"
 
 #: commerce_payzen.module:292
 msgctxt "commerce_payzen"
-msgid "If manual is selected, you will have to confirm payments manually in your bank Back Office."
-msgstr "Bei manueller Eingabe müssen Sie Zahlungen manuell in Ihrem Banksystem bestätigen."
+msgid "If manual is selected, you will have to confirm payments manually in your PayZen Back Office."
+msgstr "Bei manueller Eingabe müssen Sie Zahlungen manuell in Ihr PayZen Back Office bestätigen."
 
 #: commerce_payzen.module:311
 msgctxt "commerce_payzen"
-msgid "Selective 3-DS"
-msgstr "SELEKTIVES 3-DS"
+msgid "SELECTIVE 3DS"
+msgstr "SELEKTIVES 3DS"
 
 #: commerce_payzen.module:318
 msgctxt "commerce_payzen"
-msgid "Minimum amount to activate 3-DS"
-msgstr "Mindestbetrag zur Aktivierung von 3-DS"
+msgid "Disable 3DS"
+msgstr "3DS deaktivieren"
 
 #: commerce_payzen.module:319
 msgctxt "commerce_payzen"
-msgid "Needs subscription to Selective 3-D Secure option."
-msgstr "Muss für die Option Selektives 3-D Secure freigeschaltet sein."
+msgid ""
+"Amount below which 3DS will be disabled. Needs subscription to selective 3DS "
+"option. For more information, refer to the module documentation."
+msgstr ""
+"Betrag, unter dem 3DS deaktiviert wird. Muss für die Option Selektives 3DS "
+"freigeschaltet sein. Weitere Informationen finden Sie in der "
+"Moduldokumentation."
 
 #: commerce_payzen.module:340
 msgctxt "commerce_payzen"
@@ -283,9 +293,14 @@ msgctxt "commerce_payzen"
 msgid "Maximum amount to activate this payment method."
 msgstr "Höchstbetrag für die Nutzung dieser Zahlungsweise."
 
+#: commerce_payzen.module:363 commerce_payzen.module:365
+msgctxt "commerce_payzen"
+msgid "Redirection to shop in a few seconds..."
+msgstr "Weiterleitung zum Shop in Kürze..."
+
 #: commerce_payzen.module:374
 msgctxt "commerce_payzen"
-msgid "Return to shop"
+msgid "RETURN TO SHOP"
 msgstr "ZURÜCK ZUM SHOP"
 
 #: commerce_payzen.module:380
@@ -365,6 +380,19 @@ msgstr ""
 "Wählen Sie die zur Zahlung verfügbaren Kartentypen aus. Nichts auswählen, um die Einstellungen der Plattform zu "
 "verwenden."
 
+#: commerce_payzen.module:474
+msgctxt "commerce_payzen"
+msgid ""
+"ATTENTION: The payment in installments feature activation is subject to the "
+"prior agreement of Société Générale.<br />If you enable this feature while "
+"you have not the associated option, an error 10000 – INSTALLMENTS_NOT_ALLOWED or 07 - PAYMENT_CONFIG will occur "
+"and the buyer will not be able to pay."
+msgstr ""
+"ATTENTION: The payment in installments feature activation is subject to the "
+"prior agreement of Société Générale.<br />If you enable this feature while "
+"you have not the associated option, an error 10000 – INSTALLMENTS_NOT_ALLOWED or 07 - PAYMENT_CONFIG will occur "
+"and the buyer will not be able to pay."
+
 #: commerce_payzen.module:479
 msgctxt "commerce_payzen"
 msgid "PAYMENT OPTIONS"
@@ -378,11 +406,11 @@ msgstr "Zahlungsoptionen"
 #: commerce_payzen.module:489
 msgctxt "commerce_payzen"
 msgid ""
-"Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label : </b>The option label to "
-"display on the frontend. <br /><b>Min. amount : </b>Minimum amount to enable the payment option. <br /><b>Max. "
-"amount : </b>Maximum amount to enable the payment option. <br /><b>Contract : </b>ID of the contract to use with the "
-"option. <br /><b>Count : </b>Total number of payments. <br /><b>Period : </b>Delay (in days) between payments. <br /"
-"><b>1st payment : </b>Amount of first payment, in percentage of total amount. If empty, all payments will have the "
+"Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label: </b>The option label to "
+"display on the frontend. <br /><b>Min. amount: </b>Minimum amount to enable the payment option. <br /><b>Max. "
+"amount: </b>Maximum amount to enable the payment option. <br /><b>Contract: </b>ID of the contract to use with the "
+"option. <br /><b>Count: </b>Total number of payments. <br /><b>Period: </b>Delay (in days) between payments. <br /"
+"><b>1st payment: </b>Amount of first payment, in percentage of total amount. If empty, all payments will have the "
 "same amount."
 msgstr ""
 "Klicken Sie auf die Schaltfläche &laquo;Hinzufügen&raquo; um eine oder mehrere Zahlungsoptionen einzustellen. <br /"
@@ -395,10 +423,10 @@ msgstr ""
 #: commerce_payzen.module:490
 msgctxt "commerce_payzen"
 msgid ""
-"Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label : </b>The option label to "
-"display on the frontend. <br /><b>Min. amount : </b>Minimum amount to enable the payment option. <br /><b>Max. "
-"amount : </b>Maximum amount to enable the payment option. <br /><b>Count : </b>Total number of payments. <br /"
-"><b>Period : </b>Delay (in days) between payments. <br /><b>1st payment : </b>Amount of first payment, in percentage "
+"Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label: </b>The option label to "
+"display on the frontend. <br /><b>Min. amount: </b>Minimum amount to enable the payment option. <br /><b>Max. "
+"amount: </b>Maximum amount to enable the payment option. <br /><b>Count: </b>Total number of payments. <br /"
+"><b>Period: </b>Delay (in days) between payments. <br /><b>1st payment: </b>Amount of first payment, in percentage "
 "of total amount. If empty, all payments will have the same amount."
 msgstr ""
 "Klicken Sie auf die Schaltfläche &laquo;Hinzufügen&raquo; um eine oder mehrere Zahlungsoptionen einzustellen. <br /"
@@ -439,8 +467,14 @@ msgstr "UMSTELLUNG AUF PRODUKTIONSUMFELD"
 
 #: commerce_payzen.module:1131
 msgctxt "commerce_payzen"
-msgid "You want to know how to put your shop into production mode, please go to this URL :"
-msgstr "Sie möchten wissen, wie Sie auf Produktionsumfeld umstellen können, bitte lesen Sie folgende URL :"
+msgid ""
+"You want to know how to put your shop into production mode, please read "
+"chapters « Proceeding to test phase » and « Shifting the shop to production "
+"mode » in the documentation of the module."
+msgstr ""
+"Sie möchten wissen, wie Sie auf Produktionsumfeld umstellen können, bitte "
+"lesen Sie die Kapitel « Weiter zur Testphase » und « Verschieben des Shops "
+"in den Produktionsumfeld » in der Dokumentation des Moduls."
 
 #: commerce_payzen.module:1144
 msgctxt "commerce_payzen"
@@ -453,13 +487,12 @@ msgid ""
 "The automatic notification has not worked. Have you correctly set up the notification URL in your PayZen Back "
 "Office ?"
 msgstr ""
-"Es konnte keine automatische Benachrichtigung erstellt werden. Bitte prüfen Sie, ob die Benachrichtigung-URL in Ihrem "
-"Shopsystem korrekt eingerichtet ist."
+"Es konnte keine automatische Benachrichtigung erstellt werden. Bitte prüfen Sie, ob die Benachrichtigung-URL in Ihrem PayZen Back Office korrekt eingerichtet?"
 
 #: commerce_payzen.module:1148
 msgctxt "commerce_payzen"
 msgid ""
-"For understanding the problem, please read the documentation of the module : <br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;"
+"For understanding the problem, please read the documentation of the module: <br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;"
 "To read carefully before going further&raquo;<br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;Server URL settings&raquo;"
 msgstr ""
 "Nähere Informationen zu diesem Problem entnehmen Sie bitte der Moduldokumentation: <br />&nbsp;&nbsp;&nbsp;- Kapitel "
@@ -468,8 +501,8 @@ msgstr ""
 
 #: commerce_payzen.module:1214
 msgctxt "commerce_payzen"
-msgid "3DS certificate : "
-msgstr "3DS-Zertifikat : "
+msgid "3DS certificate: "
+msgstr "3DS-Zertifikat: "
 
 #: commerce_payzen.module:1249
 msgctxt "commerce_payzen"
@@ -553,8 +586,8 @@ msgstr "Türkisch"
 
 #: commerce_payzen.module:1270
 msgctxt "commerce_payzen"
-msgid "Back Office configuration"
-msgstr "Einstellung Back Office"
+msgid "PayZen Back Office configuration"
+msgstr "PayZen Back Office Konfiguration"
 
 #: commerce_payzen.module:1271
 msgctxt "commerce_payzen"
