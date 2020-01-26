@@ -1,46 +1,34 @@
 <?php
 /**
- * PayZen V2-Payment Module version 1.2.0 for Drupal_Commerce 7.x-1.x. Support contact : support@payzen.eu.
+ * Copyright © Lyra Network.
+ * This file is part of PayZen for Drupal Commerce. See COPYING.md for license details.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @author    Lyra Network (http://www.lyra-network.com/)
- * @copyright 2014-2017 Lyra Network and contributors
- * @license   http://www.gnu.org/licenses/gpl.html  GNU General Public License (GPL v3)
- * @category  payment
- * @package   payzen
+ * @author    Lyra Network <https://www.lyra.com>
+ * @copyright Lyra Network
+ * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v3)
  */
 
 /**
  * @file
- * Implements PayZen payment services for use in Drupal Commerce.
+ * Implements gateway payment services for use in Drupal Commerce.
  */
 
-// Load PAYZEN API
+// Load gateway API.
 include_once 'includes/PayzenApi.php';
+include_once 'includes/PayzenTools.php';
 include_once 'commerce_payzen.admin.inc';
 
 /**
  * Implements hook_commerce_payment_method_info().
  */
-function commerce_payzen_commerce_payment_method_info() {
+function commerce_payzen_commerce_payment_method_info()
+{
     $payment_methods = array();
 
-    // images base path
+    // Images base path.
     $path = base_path() . drupal_get_path('module', 'commerce_payzen') . '/images';
 
-    $display_title = payzen_t('Pay by credit card'); // you can update or unset method label here
+    $display_title = payzen_t('Payment by credit card'); // Merchant can update or unset method label here.
     $display_img = '<img src="' . $path . '/payzen.png" alt="PayZen" class="commerce-payzen-logo" >';
 
     $payment_methods['payzen_standard'] = array(
@@ -58,7 +46,7 @@ function commerce_payzen_commerce_payment_method_info() {
         )
     );
 
-    $display_title = payzen_t('Pay by credit card in several times'); // you can update or unset method label here
+    $display_title = payzen_t('Payment by credit card in installments'); // Merchant can update or unset method label here.
     $display_img = '<img src="' . $path . '/payzen_multi.png" alt="PayZen" class="commerce-payzen-logo" >';
 
     $payment_methods['payzen_multi'] = array(
@@ -76,7 +64,7 @@ function commerce_payzen_commerce_payment_method_info() {
         )
     );
 
-    $display_title = payzen_t('Pay with PayPal'); // you can update or unset method label here
+    $display_title = payzen_t('Payment with PayPal'); // Merchant can update or unset method label here.
     $display_img = '<img src="' . $path . '/paypal.png" alt="PayZen" class="commerce-payzen-logo" >';
 
     $payment_methods['payzen_paypal'] = array(
@@ -84,7 +72,7 @@ function commerce_payzen_commerce_payment_method_info() {
         'title' => payzen_t('PayZen - Payment with PayPal'),
         'short_title' => payzen_t('PayZen - Payment with PayPal'),
         'display_title' => $display_img . ' <span>' . $display_title . '</span>',
-        'description' => payzen_t('Pay with PayPal using PayZen payment platform.'),
+        'description' => payzen_t('Payment with PayPal using PayZen payment platform.'),
         'terminal' => FALSE,
         'offsite' => TRUE,
         'offsite_autoredirect' => TRUE,
@@ -100,10 +88,11 @@ function commerce_payzen_commerce_payment_method_info() {
 /**
  * Implements hook_menu().
  */
-function commerce_payzen_menu() {
+function commerce_payzen_menu()
+{
     $items = array();
 
-    // define an always accessible path to receive PayZen IPN
+    // Define an always accessible path to receive gateway IPN.
     $items['commerce_payzen/process'] = array(
         'page callback' => 'commerce_payzen_process_ipn',
         'page arguments' => array(),
@@ -114,14 +103,46 @@ function commerce_payzen_menu() {
     return $items;
 }
 
-function commerce_payzen_settings_module_info() {
+function commerce_payzen_settings_module_info()
+{
     global $base_url;
 
-    $doc_name = 'Integration_PayZen_Drupal_Commerce_7.x-1.x_v1.2.0.pdf';
+    drupal_add_css(drupal_get_path('module', 'commerce_payzen') . '/theme/commerce_payzen.admin.css');
+
+    // Get documentation links.
+    $filenames = glob(drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . PayzenTools::getDefault('DOC_PATTERN'));
+
+    $doc_langs = array(
+        'fr' => 'Français',
+        'en' => 'English',
+        'es' => 'Español'
+        // Complete when more languages are managed.
+    );
+
+    $doc_files = array();
+    foreach ($filenames as $filename) {
+        $base_filename = basename($filename, '.pdf');
+        $lang = substr($base_filename, -2); // Extract language code.
+
+        $doc_files[$base_filename . '.pdf'] = $doc_langs[$lang];
+    }
+
+    $doc_tr = '';
+    if (! empty($doc_files)) {
+        $doc_tr = '<tr>
+                    <td colspan="2">
+                        <span class="payzen-doc-links">' . payzen_t('Click to view the module configuration documentation:');
+
+        foreach ($doc_files as $file => $lang) {
+            $doc_tr .= '<a href="' . $base_url . '/' . drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . $file . '" target="_blank">' . $lang . '</a>';
+        }
+
+        $doc_tr .= '</span></td></tr>';
+    }
 
     $form = array(
         '#type' => 'fieldset',
-        '#title' => payzen_t('Module information'),
+        '#title' => payzen_t('MODULE INFORMATION'),
         '#collapsible' => TRUE,
         '#collapsed' => FALSE,
         '#attributes' => array(
@@ -129,48 +150,41 @@ function commerce_payzen_settings_module_info() {
         ),
         '#children' => '<table><tbody>
             <tr>
-                <td style="width: 200px; text-align:right;">'.payzen_t('Developed by :') . '</td>
+                <td style="width: 200px; text-align:right;">'.payzen_t('Developed by:') . '</td>
                 <td><a href="http://www.lyra-network.com/" target="_blank">Lyra network</a></td>
             </tr>
             <tr>
-                <td style="width: 200px; text-align:right;">'. payzen_t('Contact us :') .'</td>
-                <td><a href="mailto:support@payzen.eu">support@payzen.eu</a></td>
+                <td style="width: 200px; text-align:right;">'. payzen_t('Contact us:') . '</td>
+                <td><a href="mailto:' . PayzenTools::getDefault('SUPPORT_EMAIL') . '">' . PayzenTools::getDefault('SUPPORT_EMAIL') . '</a></td>
             </tr>
             <tr>
-                <td style="width: 200px; text-align:right;">'. payzen_t('Module version :') .'</td>
-                <td>1.2.0</td>
+                <td style="width: 200px; text-align:right;">'. payzen_t('Module version:') . '</td>
+                <td>' . PayzenTools::getDefault('PLUGIN_VERSION') . '</td>
             </tr>
             <tr>
-                <td style="width: 200px; text-align:right;">'. payzen_t('Platform version :') .'</td>
-                <td>V2</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <a href="' . $base_url . '/' . drupal_get_path('module', 'commerce_payzen').'/installation_doc/' . $doc_name . '"
-                       target="_blank"
-                       style="color: red; font_weight: bold;">' . payzen_t('CLICK HERE TO VIEW THE MODULE CONFIGURATION DOCUMENTATION') . '</a>
-                </td>
-            </tr>
-        </tbody></table>'
+                <td style="width: 200px; text-align:right;">'. payzen_t('Gateway version') . '</td>
+                <td>' . PayzenTools::getDefault('GATEWAY_VERSION') . '</td>
+            </tr>' . $doc_tr . '</tbody></table>'
     );
 
     return $form;
 }
 
-function commerce_payzen_gateway_access_settings($settings = NULL) {
+function commerce_payzen_gateway_access_settings($settings = NULL)
+{
     $settings = (array) $settings + array(
         'gateway_access' => array(
-            'payzen_site_id' => '12345678',
-            'payzen_key_test' => '1111111111111111',
-            'payzen_key_prod' => '2222222222222222',
-            'payzen_ctx_mode' => 'TEST',
-            'payzen_platform_url' => 'https://secure.payzen.eu/vads-payment/'
+            'payzen_site_id' => PayzenTools::getDefault('SITE_ID'),
+            'payzen_key_test' => PayzenTools::getDefault('KEY_TEST'),
+            'payzen_key_prod' => PayzenTools::getDefault('KEY_PROD'),
+            'payzen_ctx_mode' => PayzenTools::getDefault('CTX_MODE'),
+            'payzen_platform_url' => PayzenTools::getDefault('GATEWAY_URL')
         )
     );
 
     $form = array();
 
-    // IPN URL to display
+    // IPN URL to display.
     $parts = array('commerce_payzen', 'process');
     $ipn_url = urldecode(url(implode('/', $parts), array('absolute' => TRUE)));
 
@@ -178,31 +192,35 @@ function commerce_payzen_gateway_access_settings($settings = NULL) {
         '#type' => 'fieldset',
         '#title' => payzen_t('Payment gateway access'),
         '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
+        '#collapsed' => FALSE
     );
     $form['gateway_access']['payzen_site_id'] = array(
         '#type' => 'textfield',
         '#size' => '20',
         '#title' => payzen_t('Shop ID'),
-        '#description' => payzen_t('The identifier provided by your bank.'),
+        '#description' => payzen_t('The identifier provided by PayZen.'),
         '#default_value' => $settings['gateway_access']['payzen_site_id'],
-        '#required' => TRUE,
+        '#required' => TRUE
     );
-    $form['gateway_access']['payzen_key_test'] = array(
-        '#type' => 'textfield',
-        '#size' => '30',
-        '#title' => payzen_t('Certificate in test mode'),
-        '#description' => payzen_t('Certificate provided by your bank for test (Available in your store Back Office).'),
-        '#default_value' => $settings['gateway_access']['payzen_key_test'],
-        '#required' => TRUE,
-    );
+
+    if (! PayzenTools::$pluginFeatures['qualif']) {
+        $form['gateway_access']['payzen_key_test'] = array(
+            '#type' => 'textfield',
+            '#size' => '30',
+            '#title' => payzen_t('Key in test mode'),
+            '#description' => payzen_t('Key provided by PayZen for test mode (available in PayZen Back Office).'),
+            '#default_value' => $settings['gateway_access']['payzen_key_test'],
+            '#required' => TRUE
+        );
+    }
+
     $form['gateway_access']['payzen_key_prod'] = array(
         '#type' => 'textfield',
         '#size' => '30',
-        '#title' => payzen_t('Certificate in production mode'),
-        '#description' => payzen_t('Certificate provided by your bank (available in your store Back Office after enabling production mode).'),
+        '#title' => payzen_t('Key in production mode'),
+        '#description' => payzen_t('Key provided by PayZen (available in PayZen Back Office after enabling production mode).'),
         '#default_value' => $settings['gateway_access']['payzen_key_prod'],
-        '#required' => TRUE,
+        '#required' => TRUE
     );
     $form['gateway_access']['payzen_ctx_mode'] = array(
         '#type' => 'radios',
@@ -210,29 +228,39 @@ function commerce_payzen_gateway_access_settings($settings = NULL) {
         '#description' => payzen_t('The context mode of this module.'),
         '#options' => payzen_ctx_mode_options(),
         '#default_value' => $settings['gateway_access']['payzen_ctx_mode'],
-        '#required' => TRUE,
+        '#required' => TRUE
     );
+
+    if (PayzenTools::$pluginFeatures['qualif']) {
+        $form['gateway_access']['payzen_ctx_mode']['#attributes']['disabled'] = 'disabled';
+    }
+
+    $form['gateway_access']['payzen_ipn_url'] = array(
+        '#type' => 'item',
+        '#title' => payzen_t('Instant Payment Notification URL'),
+        '#description' => '<span class="payzen-ipn-desc">
+            <img src="' . base_path() . drupal_get_path('module', 'commerce_payzen') . '/images/warn.png">' .
+             payzen_t('URL to copy into your PayZen Back Office > Settings > Notification rules.') .
+            '</span>',
+        '#markup' => $ipn_url
+    );
+
     $form['gateway_access']['payzen_platform_url'] = array(
         '#type' => 'textfield',
         '#title' => payzen_t('Payment page URL'),
         '#description' => payzen_t('Link to the payment page.'),
         '#default_value' => $settings['gateway_access']['payzen_platform_url'],
-        '#required' => TRUE,
-    );
-    $form['gateway_access']['payzen_ipn_url'] = array(
-        '#type' => 'textfield',
-        '#attributes' => array('readonly' => 'readonly'),
-        '#title' => payzen_t('Instant Payment Notification URL to copy into your store Back Office:'),
-        '#default_value' => $ipn_url
+        '#required' => TRUE
     );
 
     return $form;
 }
 
-function commerce_payzen_payment_page_settings($settings = NULL) {
+function commerce_payzen_payment_page_settings($settings = NULL)
+{
     $settings = (array) $settings + array(
         'payment_page' => array(
-            'payzen_language' => 'fr',
+            'payzen_language' => PayzenTools::getDefault('LANGUAGE'),
             'payzen_available_languages' => '',
             'payzen_capture_delay' => '',
             'payzen_validation_mode' => ''
@@ -243,16 +271,16 @@ function commerce_payzen_payment_page_settings($settings = NULL) {
 
     $form['payment_page'] = array(
         '#type' => 'fieldset',
-        '#title' => payzen_t('Payment page'),
+        '#title' => payzen_t('PAYMENT PAGE'),
         '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
+        '#collapsed' => FALSE
     );
     $form['payment_page']['payzen_language'] = array(
         '#type' => 'select',
         '#title' => payzen_t('Default language'),
         '#description' => payzen_t('Default language on the payment page.'),
         '#options' => payzen_language_options(),
-        '#default_value' => $settings['payment_page']['payzen_language'],
+        '#default_value' => $settings['payment_page']['payzen_language']
     );
     $form['payment_page']['payzen_available_languages'] = array(
         '#type' => 'select',
@@ -260,27 +288,28 @@ function commerce_payzen_payment_page_settings($settings = NULL) {
         '#title' => payzen_t('Available languages'),
         '#description' => payzen_t('Languages available on the payment page. If you do not select any, all the supported languages will be available.'),
         '#options' => payzen_language_options(),
-        '#default_value' => $settings['payment_page']['payzen_available_languages'],
+        '#default_value' => $settings['payment_page']['payzen_available_languages']
     );
     $form['payment_page']['payzen_capture_delay'] = array(
         '#type' => 'textfield',
         '#size' => '20',
         '#title' => payzen_t('Capture delay'),
-        '#description' => payzen_t('The number of days before the bank capture (adjustable in your store Back Office).'),
-        '#default_value' => $settings['payment_page']['payzen_capture_delay'],
+        '#description' => payzen_t('The number of days before the bank capture (adjustable in your PayZen Back Office).'),
+        '#default_value' => $settings['payment_page']['payzen_capture_delay']
     );
     $form['payment_page']['payzen_validation_mode'] = array(
         '#type' => 'select',
-        '#title' => payzen_t('Payment validation'),
-        '#description' => payzen_t('If manual is selected, you will have to confirm payments manually in your bank Back Office.'),
+        '#title' => payzen_t('Validation mode'),
+        '#description' => payzen_t('If manual is selected, you will have to confirm payments manually in your PayZen Back Office.'),
         '#options' => payzen_validation_mode_options(),
-        '#default_value' => $settings['payment_page']['payzen_validation_mode'],
+        '#default_value' => $settings['payment_page']['payzen_validation_mode']
     );
 
     return $form;
 }
 
-function commerce_payzen_selective_3ds_settings($settings = NULL) {
+function commerce_payzen_selective_3ds_settings($settings = NULL)
+{
     $settings = (array) $settings + array(
         'selective_3ds' => array(
             'payzen_3ds_min' => ''
@@ -291,22 +320,23 @@ function commerce_payzen_selective_3ds_settings($settings = NULL) {
 
     $form['selective_3ds'] = array(
         '#type' => 'fieldset',
-        '#title' => payzen_t('Selective 3-DS'),
+        '#title' => payzen_t('SELECTIVE 3DS'),
         '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
+        '#collapsed' => FALSE
     );
     $form['selective_3ds']['payzen_3ds_min'] = array(
         '#type' => 'textfield',
         '#size' => '20',
-        '#title' => payzen_t('Minimum amount to activate 3-DS'),
-        '#description' => payzen_t('Needs subscription to Selective 3-D Secure option.'),
-        '#default_value' => $settings['selective_3ds']['payzen_3ds_min'],
+        '#title' => payzen_t('Disable 3DS'),
+        '#description' => payzen_t('Amount below which 3DS will be disabled. Needs subscription to selective 3DS option. For more information, refer to the module documentation.'),
+        '#default_value' => $settings['selective_3ds']['payzen_3ds_min']
     );
 
     return $form;
 }
 
-function commerce_payzen_amount_restrictions_settings($settings = NULL) {
+function commerce_payzen_amount_restrictions_settings($settings = NULL)
+{
     $settings = (array) $settings + array(
         'amount_restrictions' => array(
             'payzen_amount_min' => '',
@@ -338,14 +368,15 @@ function commerce_payzen_amount_restrictions_settings($settings = NULL) {
     return $form;
 }
 
-function commerce_payzen_return_to_shop_settings($settings = NULL) {
+function commerce_payzen_return_to_shop_settings($settings = NULL)
+{
     $settings = (array) $settings + array(
         'return_to_shop' => array(
             'payzen_redirect_enabled' => '0',
             'payzen_redirect_success_timeout' => '5',
-            'payzen_redirect_success_message' => 'Redirection vers la boutique dans quelques instants...',
+            'payzen_redirect_success_message' => payzen_t('Redirection to shop in a few seconds...'),
             'payzen_redirect_error_timeout' => '5',
-            'payzen_redirect_error_message' => 'Redirection vers la boutique dans quelques instants...',
+            'payzen_redirect_error_message' => payzen_t('Redirection to shop in a few seconds...'),
             'payzen_return_mode' => 'GET'
         )
     );
@@ -354,7 +385,7 @@ function commerce_payzen_return_to_shop_settings($settings = NULL) {
 
     $form['return_to_shop'] = array(
         '#type' => 'fieldset',
-        '#title' => payzen_t('Return to shop'),
+        '#title' => payzen_t('RETURN TO SHOP'),
         '#collapsible' => TRUE,
         '#collapsed' => FALSE
     );
@@ -363,14 +394,14 @@ function commerce_payzen_return_to_shop_settings($settings = NULL) {
         '#title' => payzen_t('Automatic redirection'),
         '#description' => payzen_t('If enabled, the buyer is automatically redirected to your site at the end of the payment.'),
         '#options' => payzen_automatic_forward_options(),
-        '#default_value' => $settings['return_to_shop']['payzen_redirect_enabled'],
+        '#default_value' => $settings['return_to_shop']['payzen_redirect_enabled']
     );
     $form['return_to_shop']['payzen_redirect_success_timeout'] = array(
         '#type' => 'textfield',
         '#size' => '20',
         '#title' => payzen_t('Redirection timeout on success'),
         '#description' => payzen_t('Time in seconds (0-300) before the buyer is automatically redirected to your website after a successful payment.'),
-        '#default_value' => $settings['return_to_shop']['payzen_redirect_success_timeout'],
+        '#default_value' => $settings['return_to_shop']['payzen_redirect_success_timeout']
     );
     $form['return_to_shop']['payzen_redirect_success_message'] = array(
         '#type' => 'textfield',
@@ -383,7 +414,7 @@ function commerce_payzen_return_to_shop_settings($settings = NULL) {
         '#size' => '20',
         '#title' => payzen_t('Redirection timeout on failure'),
         '#description' => payzen_t('Time in seconds (0-300) before the buyer is automatically redirected to your website after a declined payment.'),
-        '#default_value' => $settings['return_to_shop']['payzen_redirect_error_timeout'],
+        '#default_value' => $settings['return_to_shop']['payzen_redirect_error_timeout']
     );
     $form['return_to_shop']['payzen_redirect_error_message'] = array(
         '#type' => 'textfield',
@@ -396,7 +427,7 @@ function commerce_payzen_return_to_shop_settings($settings = NULL) {
         '#title' => payzen_t('Return mode'),
         '#description' => payzen_t('Method that will be used for transmitting the payment result from the payment page to your shop.'),
         '#options' => payzen_return_mode_options(),
-        '#default_value' => $settings['return_to_shop']['payzen_return_mode'],
+        '#default_value' => $settings['return_to_shop']['payzen_return_mode']
     );
 
     return $form;
@@ -405,7 +436,8 @@ function commerce_payzen_return_to_shop_settings($settings = NULL) {
 /**
  * Payment method callback: standard payment settings form.
  */
-function commerce_payzen_standard_settings_form($settings = NULL) {
+function commerce_payzen_standard_settings_form($settings = NULL)
+{
     $form = array();
 
     $form['info'] = commerce_payzen_settings_module_info();
@@ -420,7 +452,7 @@ function commerce_payzen_standard_settings_form($settings = NULL) {
         '#title' => payzen_t('Card types'),
         '#description' => payzen_t('The card type(s) that can be used for the payment. Select none to use platform configuration.'),
         '#options' => PayzenApi::getSupportedCardTypes(),
-        '#default_value' => $selected_cards,
+        '#default_value' => $selected_cards
     );
 
     $form += commerce_payzen_selective_3ds_settings($settings);
@@ -433,7 +465,8 @@ function commerce_payzen_standard_settings_form($settings = NULL) {
 /**
  * Payment method callback: payment in installments settings form.
  */
-function commerce_payzen_multi_settings_form($settings = NULL) {
+function commerce_payzen_multi_settings_form($settings = NULL)
+{
     $form = array();
 
     $form['info'] = commerce_payzen_settings_module_info();
@@ -448,13 +481,13 @@ function commerce_payzen_multi_settings_form($settings = NULL) {
         '#title' => payzen_t('Card types'),
         '#description' => payzen_t('The card type(s) that can be used for the payment. Select none to use platform configuration.'),
         '#options' => commerce_payzen_multi_cards(),
-        '#default_value' => $selected_cards,
+        '#default_value' => $selected_cards
     );
 
     $form += commerce_payzen_selective_3ds_settings($settings);
     $form += commerce_payzen_amount_restrictions_settings($settings);
 
-    // multi payment options
+    // Multi payment options.
     $form['payment_options'] = array(
         '#type' => 'fieldset',
         '#collapsible' => TRUE,
@@ -469,18 +502,34 @@ function commerce_payzen_multi_settings_form($settings = NULL) {
         '#theme' => 'commerce_payzen_backend_multi_options',
         '#title' => payzen_t('Payment options'),
         '#description' => $cb_avail ?
-            payzen_t('Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label : </b>The option label to display on the frontend. <br /><b>Min. amount : </b>Minimum amount to enable the payment option. <br /><b>Max. amount : </b>Maximum amount to enable the payment option. <br /><b>Contract : </b>ID of the contract to use with the option. <br /><b>Count : </b>Total number of payments. <br /><b>Period : </b>Delay (in days) between payments. <br /><b>1st payment : </b>Amount of first payment, in percentage of total amount. If empty, all payments will have the same amount.') :
-            payzen_t('Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label : </b>The option label to display on the frontend. <br /><b>Min. amount : </b>Minimum amount to enable the payment option. <br /><b>Max. amount : </b>Maximum amount to enable the payment option. <br /><b>Count : </b>Total number of payments. <br /><b>Period : </b>Delay (in days) between payments. <br /><b>1st payment : </b>Amount of first payment, in percentage of total amount. If empty, all payments will have the same amount.'),
+            payzen_t('Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label: </b>The option label to display on the frontend. <br /><b>Min. amount: </b>Minimum amount to enable the payment option. <br /><b>Max. amount: </b>Maximum amount to enable the payment option. <br /><b>Contract: </b>ID of the contract to use with the option. <br /><b>Count: </b>Total number of payments. <br /><b>Period: </b>Delay (in days) between payments. <br /><b>1st payment: </b>Amount of first payment, in percentage of total amount. If empty, all payments will have the same amount.') :
+            payzen_t('Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label: </b>The option label to display on the frontend. <br /><b>Min. amount: </b>Minimum amount to enable the payment option. <br /><b>Max. amount: </b>Maximum amount to enable the payment option. <br /><b>Count: </b>Total number of payments. <br /><b>Period: </b>Delay (in days) between payments. <br /><b>1st payment: </b>Amount of first payment, in percentage of total amount. If empty, all payments will have the same amount.'),
         '#default_value' => $options,
-        '#element_validate' => array('commerce_payzen_multi_settings_options_validate'),
+        '#element_validate' => array('commerce_payzen_multi_settings_options_validate')
     );
 
     $form += commerce_payzen_return_to_shop_settings($settings);
+    if (PayzenTools::$pluginFeatures['restrictmulti']) {
+        $msg = '<p class="payzen-multi-warn">';
+        $msg .= payzen_t('ATTENTION: The payment in installments feature activation is subject to the prior agreement of Société Générale.<br />If you enable this feature while you have not the associated option, an error 10000 – INSTALLMENTS_NOT_ALLOWED or 07 - PAYMENT_CONFIG will occur and the buyer will not be able to pay.');
+        $msg .= '</p>';
+
+        $warn = array(
+            'error' => array(
+                '#type' => 'item',
+                '#title' => '',
+                '#markup' => $msg
+            )
+        );
+
+        $form = $warn + $form;
+    }
 
     return $form;
 }
 
-function commerce_payzen_multi_settings_options_validate($element, &$form_state, $form) {
+function commerce_payzen_multi_settings_options_validate($element, &$form_state, $form)
+{
     if (isset($form_state['input']['parameter']['payment_method']['settings']['payment_method']['settings']['payment_options']['payzen_multi_options'])) {
         $value = $form_state['input']['parameter']['payment_method']['settings']['payment_method']['settings']['payment_options']['payzen_multi_options'];
 
@@ -489,7 +538,7 @@ function commerce_payzen_multi_settings_options_validate($element, &$form_state,
         }
 
         foreach ($value as $key => $option) {
-            if (! $option['label'] // validate payment options
+            if (! $option['label'] // Validate payment options.
                 || ! is_numeric($option['count'])
                 || ! is_numeric($option['period'])
                 || ($option['first'] && ! is_numeric($option['first']))
@@ -505,7 +554,8 @@ function commerce_payzen_multi_settings_options_validate($element, &$form_state,
     }
 }
 
-function commerce_payzen_multi_cards() {
+function commerce_payzen_multi_cards()
+{
     $multi_cards = array(
         'AMEX', 'CB', 'DINERS', 'DISCOVER', 'E-CARTEBLEUE', 'JCB', 'MASTERCARD',
         'PRV_BDP', 'PRV_BDT', 'PRV_OPT', 'PRV_SOC', 'VISA', 'VISA_ELECTRON'
@@ -526,7 +576,8 @@ function commerce_payzen_multi_cards() {
 /**
  * Implements hook_theme().
  */
-function commerce_payzen_theme() {
+function commerce_payzen_theme()
+{
     return array(
         'commerce_payzen_backend_multi_options' => array(
             'render element' => 'element',
@@ -535,7 +586,8 @@ function commerce_payzen_theme() {
     );
 }
 
-function commerce_payzen_multi_options($row_value, $order_total = NULL) {
+function commerce_payzen_multi_options($row_value, $order_total = NULL)
+{
     $options = @json_decode($row_value, TRUE);
 
     if (! is_array($options) || empty($options)) {
@@ -564,7 +616,8 @@ function commerce_payzen_multi_options($row_value, $order_total = NULL) {
 /**
  * Payment method callback: PayPal payment settings form.
  */
-function commerce_payzen_paypal_settings_form($settings = NULL) {
+function commerce_payzen_paypal_settings_form($settings = NULL)
+{
     $form = array();
 
     $form['info'] = commerce_payzen_settings_module_info();
@@ -578,23 +631,35 @@ function commerce_payzen_paypal_settings_form($settings = NULL) {
     return $form;
 }
 
+function commerce_payzen_commerce_payment_method_info_alter(&$payment_methods)
+{
+    if (! PayzenTools::$pluginFeatures['multi']) {
+        unset($payment_methods['payzen_multi']);
+    }
+
+    if (! PayzenTools::$pluginFeatures['paypal']) {
+        unset($payment_methods['payzen_paypal']);
+    }
+}
+
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function commerce_payzen_form_commerce_checkout_form_alter(&$form, &$form_state) {
+function commerce_payzen_form_commerce_checkout_form_alter(&$form, &$form_state)
+{
     if (! empty($form['commerce_payment']['payment_method'])) {
         $order = $form_state['order'];
-        $price = $order->commerce_order_total['und'][0]; // price array
+        $price = $order->commerce_order_total['und'][0]; // Price array.
 
         $payzen_methods = array('payzen_standard', 'payzen_multi', 'payzen_paypal');
 
-        // decimal amount
+        // Decimal amount.
         $amount = commerce_currency_amount_to_decimal($price['amount'], $price['currency_code']);
 
         $instances = 0;
 
-        foreach ($form['commerce_payment']['payment_method']['#options'] as $key => &$value) {
-            list($method_id, $rule_name) = explode('|', $key);
+        foreach (array_keys($form['commerce_payment']['payment_method']['#options']) as $key) {
+            list ($method_id, ) = explode('|', $key);
 
 
             if (in_array($method_id, $payzen_methods)) {
@@ -615,19 +680,21 @@ function commerce_payzen_form_commerce_checkout_form_alter(&$form, &$form_state)
         }
 
         if ($instances > 0) {
-            // at least one instance of commerce_payzen payment method is available, include module CSS on the form
+            // At least one instance of commerce_payzen payment method is available, include module CSS on the form.
             $form['commerce_payment']['payment_method']['#attached']['css'][] = drupal_get_path('module', 'commerce_payzen') . '/theme/commerce_payzen.css';
         }
     }
 }
 
-function commerce_payzen_is_supported_currency($currency) {
+function commerce_payzen_is_supported_currency($currency)
+{
     $currency_obj = PayzenApi::findCurrencyByAlphaCode($currency);
 
     return ! empty($currency_obj);
 }
 
-function commerce_payzen_is_available($amount, $settings, $method_id) {
+function commerce_payzen_is_available($amount, $settings, $method_id)
+{
     $amount_min = isset($settings['amount_restrictions']['payzen_amount_min']) ? $settings['amount_restrictions']['payzen_amount_min'] : NULL;
     $amount_max = isset($settings['amount_restrictions']['payzen_amount_max']) ? $settings['amount_restrictions']['payzen_amount_max'] : NULL;
 
@@ -635,7 +702,7 @@ function commerce_payzen_is_available($amount, $settings, $method_id) {
         return FALSE;
     }
 
-    if ($method_id == 'payzen_multi') {
+    if ($method_id === 'payzen_multi') {
         if (! isset($settings['payment_options']['payzen_multi_options'])) {
             return FALSE;
         }
@@ -652,14 +719,15 @@ function commerce_payzen_is_available($amount, $settings, $method_id) {
 /**
  * Payment method callback: submit form.
  */
-function commerce_payzen_multi_submit_form($payment_method, $pane_values, $checkout_pane, $order) {
+function commerce_payzen_multi_submit_form($payment_method, $pane_values, $checkout_pane, $order)
+{
     if (! isset($payment_method['settings']['payment_options']['payzen_multi_options'])) {
         return;
     }
 
     $form = array();
 
-    // order amount
+    // Order amount.
     $price = $order->commerce_order_total['und'][0];
     $amount = commerce_currency_amount_to_decimal($price['amount'], $price['currency_code']);
 
@@ -677,7 +745,7 @@ function commerce_payzen_multi_submit_form($payment_method, $pane_values, $check
     }
 
     $classes = array('commerce-payzen-option');
-    if (count($multi_options) == 1) {
+    if (count($multi_options) === 1) {
         $classes[] = 'singleton';
     }
 
@@ -700,16 +768,17 @@ function commerce_payzen_multi_submit_form($payment_method, $pane_values, $check
 /**
  * Payment method callback: submit form submission.
  */
-function commerce_payzen_multi_submit_form_submit($payment_method, $pane_form, $pane_values, $order, $charge) {
+function commerce_payzen_multi_submit_form_submit($payment_method, $pane_form, $pane_values, $order, $charge)
+{
     if (! isset($payment_method['settings']['payment_options']['payzen_multi_options'])) {
         return;
     }
 
-    // ID of the selected payment option
+    // ID of the selected payment option.
     $option_id = $pane_values['payzen_multi_option'];
 
     $config_options = $payment_method['settings']['payment_options']['payzen_multi_options'];
-    $multi_options = commerce_payzen_multi_options($config_options); // all payment options
+    $multi_options = commerce_payzen_multi_options($config_options); // All payment options.
 
     $order->data['commerce_payzen_multi_option'] = $multi_options[$option_id];
 }
@@ -717,15 +786,16 @@ function commerce_payzen_multi_submit_form_submit($payment_method, $pane_form, $
 /**
  * Payment method callback: prepare form to redirect to payment platform (single and multiple payment).
  */
-function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_method) {
+function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_method)
+{
     include_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'commerce_payzen') . '/includes/PayzenRequest.php';
 
     $payzen_request = new PayzenRequest();
 
-    // price array
+    // Price array.
     $price = $order->commerce_order_total['und'][0];
 
-    // currency
+    // Currency.
     $currency_obj = PayzenApi::findCurrencyByAlphaCode($price['currency_code']);
     if (! $currency_obj) {
         drupal_set_message(payzen_t('The used currency is not supported.'), 'error');
@@ -734,23 +804,23 @@ function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_met
 
     $settings = $payment_method['settings'];
 
-    // set payment platform access parameters
+    // Set payment platform access parameters.
     foreach ($settings['gateway_access'] as $name => $value) {
         $param_name = substr($name, strpos($name, '_') + 1);
         $payzen_request->set($param_name, $value);
     }
 
-    // set return to shop parameters
+    // Set return to shop parameters.
     foreach ($settings['return_to_shop'] as $name => $value) {
         $param_name = substr($name, strpos($name, '_') + 1);
         $payzen_request->set($param_name, $value);
     }
 
-    // return URL
+    // Return URL.
     $return_url = url('checkout/' . $order->order_id . '/payment/return/' . $order->data['payment_redirect_key'], array('absolute' => TRUE));
     $payzen_request->set('url_return', $return_url);
 
-    // set payment page parameters
+    // Set payment page parameters.
     $payzen_request->set('capture_delay', $settings['payment_page']['payzen_capture_delay'] );
     $payzen_request->set('validation_mode', $settings['payment_page']['payzen_validation_mode']);
 
@@ -767,10 +837,10 @@ function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_met
 
     $payzen_request->set('available_languages', $available_languages);
 
-    // add sub-module specific parameters
+    // Add submodule specific parameters.
     switch ($payment_method['method_id']) {
         case  'payzen_paypal':
-            $test_mode = $payzen_request->get('ctx_mode') == 'TEST';
+            $test_mode = $payzen_request->get('ctx_mode') === 'TEST';
             $payzen_request->set('payment_cards', $test_mode ? 'PAYPAL_SB' : 'PAYPAL');
             break;
 
@@ -783,25 +853,25 @@ function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_met
             break;
     }
 
-    // set misc parameters
+    // Set misc parameters.
     $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
     $billing_address = $order_wrapper->commerce_customer_billing->commerce_customer_address->value();
 
     if (isset($order_wrapper->commerce_customer_shipping) && isset($order_wrapper->commerce_customer_shipping->commerce_customer_address)) {
         $shipping_address = $order_wrapper->commerce_customer_shipping->commerce_customer_address->value();
     } else {
-        // if no shipping module installed
+        // If no shipping module installed.
         $shipping_address = $billing_address;
     }
 
-    // get current drupal commerce version
+    // Get current drupal commerce version.
     $info = system_get_info('module', 'commerce');
     $version = VERSION . '_' . substr($info['version'], strpos($info['version'], '-') + 1);
 
     $order_params = array(
         'amount' => $price['amount'],
         'currency' => $currency_obj->getNum(),
-        'contrib' => 'Drupal_Commerce7.x-1.x_1.2.0/' . $version . '/' . PHP_VERSION,
+        'contrib' => PayzenTools::getDefault('CMS_IDENTIFIER') . '_' . PayzenTools::getDefault('PLUGIN_VERSION') . '/' . $version . '/' . PHP_VERSION,
         'order_id' => $order->order_id,
         'order_info' => 'instance_id=' . $payment_method['instance_id'],
 
@@ -830,18 +900,18 @@ function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_met
 
     $payzen_request->setFromArray($order_params);
 
-    // activate 3ds ?
+    // Activate 3DS?
     $decimal_amount = commerce_currency_amount_to_decimal($price['amount'], $price['currency_code']);
     $threeds_mpi = NULL;
     $threeds_min_amount = $settings['selective_3ds']['payzen_3ds_min'];
-    if ($threeds_min_amount != '' && $decimal_amount < $threeds_min_amount) {
+    if ($threeds_min_amount && ($decimal_amount < $threeds_min_amount)) {
         $threeds_mpi = '2';
     }
 
     $payzen_request->set('threeds_mpi', $threeds_mpi);
 
-    // process multi payment option
-    if ($payment_method['method_id'] == 'payzen_multi') {
+    // Process multi payment option.
+    if ($payment_method['method_id'] === 'payzen_multi') {
         $option = $order->data['commerce_payzen_multi_option'];
 
         $first = $option['first'] ? round($option['first'] / 100 * $price['amount']) : NULL;
@@ -852,16 +922,16 @@ function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_met
         }
     }
 
-    // set payment platform URL as form action
+    // Set payment gateway URL as form action.
     $form['#action'] = $payzen_request->get('platform_url');
 
-    foreach ($payzen_request->getRequestFieldsArray(false, false) as $name => $value) {
+    foreach ($payzen_request->getRequestFieldsArray(FALSE, FALSE) as $name => $value) {
         $form[$name] = array('#type' => 'hidden', '#value' => $value);
     }
 
     $form['submit'] = array(
         '#type' => 'submit',
-        '#value' => payzen_t('Proceed to PayZen'),
+        '#value' => payzen_t('Proceed to PayZen')
     );
 
     return $form;
@@ -870,10 +940,11 @@ function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_met
 /**
  * Process instant payment notifications.
  */
-function commerce_payzen_process_ipn() {
+function commerce_payzen_process_ipn()
+{
     include_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'commerce_payzen') . '/includes/PayzenResponse.php';
 
-    if (! isset($_POST['vads_order_info'])) { // order_info used to store method id
+    if (! isset($_POST['vads_order_info'])) { // order_info used to store method ID.
         return;
     }
 
@@ -896,7 +967,7 @@ function commerce_payzen_process_ipn() {
     if (! $payzen_response->isAuthentified()) {
         watchdog(
             'commerce_payzen',
-            'Suspect request sent to commerce_payzen_process_payment, IP : %ip',
+            'Suspect request sent to commerce_payzen_process_payment, IP: %ip',
             array('%ip' => $_SERVER['REMOTE_ADDR']),
             WATCHDOG_ERROR
         );
@@ -911,7 +982,7 @@ function commerce_payzen_process_ipn() {
     if (empty($order)) {
         watchdog(
             'commerce_payzen',
-            'Payment check attempted on non existing order : %orderID',
+            'Payment check attempted on non existing order: %orderID',
             array('%orderID' => $order_id),
             WATCHDOG_ERROR
         );
@@ -921,7 +992,7 @@ function commerce_payzen_process_ipn() {
     }
 
     if ($order->status === 'checkout_payment' || $order->status === 'pending') {
-        // order waiting for payment confirmation
+        // Order waiting for payment confirmation.
         watchdog('commerce_payzen', $payzen_response->getLogMessage(), array(), WATCHDOG_INFO);
 
         if ($payzen_response->isAcceptedPayment()) {
@@ -934,7 +1005,7 @@ function commerce_payzen_process_ipn() {
     } else {
         $success_order_statuses = array ('processing', 'completed');
 
-        // order already processed
+        // Order already processed.
         if (in_array($order->status, $success_order_statuses) && $payzen_response->isAcceptedPayment()) {
             echo($payzen_response->getOutputForPlatform('payment_ok_already_done'));
             return TRUE;
@@ -951,7 +1022,8 @@ function commerce_payzen_process_ipn() {
 /**
  * Payment method callback: return back to store form validation.
  */
-function commerce_payzen_redirect_form_validate($order, $payment_method) {
+function commerce_payzen_redirect_form_validate($order, $payment_method)
+{
     include_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'commerce_payzen') . '/includes/PayzenResponse.php';
 
     $settings = $payment_method['settings'];
@@ -966,7 +1038,7 @@ function commerce_payzen_redirect_form_validate($order, $payment_method) {
     if (! $payzen_response->isAuthentified()) {
         watchdog(
             'commerce_payzen',
-            'Suspect request sent to commerce_payzen_redirect_form_validate, IP : %ip',
+            'Suspect request sent to commerce_payzen_redirect_form_validate, IP: %ip',
             array('%ip' => $_SERVER['REMOTE_ADDR']),
             WATCHDOG_ERROR
         );
@@ -978,7 +1050,7 @@ function commerce_payzen_redirect_form_validate($order, $payment_method) {
     if (empty($order) || ! $order->order_id) {
         watchdog(
             'commerce_payzen',
-            'Payment check attempted on non existing order : %orderID',
+            'Payment check attempted on non existing order: %orderID',
             array('%orderID' => $payzen_response->get('order_id')),
             WATCHDOG_ERROR
         );
@@ -988,33 +1060,32 @@ function commerce_payzen_redirect_form_validate($order, $payment_method) {
     }
 
     if (! $payzen_response->get('trans_status')) {
-        // form error
+        // Form error.
         watchdog('commerce_payzen', $payzen_response->getLogMessage(), array(), WATCHDOG_ERROR);
 
         drupal_set_message(payzen_t('An error has occured in the payment process.'), 'error');
         return FALSE;
     }
 
-    if ($settings['gateway_access']['payzen_ctx_mode'] == 'TEST') {
+    if (PayzenTools::$pluginFeatures['prodfaq'] && $settings['gateway_access']['payzen_ctx_mode'] === 'TEST') {
         $message = '<p><u>' . payzen_t('GOING INTO PRODUCTION') . '</u></p>';
-        $message .= payzen_t('You want to know how to put your shop into production mode, please go to this URL :');
-        $message .= '&nbsp;<a href="https://secure.payzen.eu/html/faq/prod" target="_blank">https://secure.payzen.eu/html/faq/prod</a>';
+        $message .= payzen_t('You want to know how to put your shop into production mode, please read chapters « Proceeding to test phase » and « Shifting the shop to production mode » in the documentation of the module.');
 
         drupal_set_message($message, 'notice');
     }
 
     if ($order->status === 'checkout_payment') {
-        // order waiting for payment confirmation
+        // Order waiting for payment confirmation.
         watchdog('commerce_payzen', $payzen_response->getLogMessage(), array(), WATCHDOG_INFO);
 
-        // test mode warning : IPN URL not correctly called
-        if (! $payzen_response->isCancelledPayment() && $settings['gateway_access']['payzen_ctx_mode'] == 'TEST') {
+        // Test mode warning: IPN URL not correctly called.
+        if (! $payzen_response->isCancelledPayment() && $settings['gateway_access']['payzen_ctx_mode'] === 'TEST') {
             if (variable_get('maintenance_mode', FALSE)) {
                 $message = payzen_t('The shop is in maintenance mode. The automatic notification cannot work.');
             } else {
                 $message = payzen_t('The automatic notification has not worked. Have you correctly set up the notification URL in your PayZen Back Office ?');
                 $message .= '<br />';
-                $message .= payzen_t('For understanding the problem, please read the documentation of the module : <br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;To read carefully before going further&raquo;<br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;Server URL settings&raquo;');
+                $message .= payzen_t('For understanding the problem, please read the documentation of the module: <br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;To read carefully before going further&raquo;<br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;Server URL settings&raquo;');
             }
 
             drupal_set_message($message, 'warning');
@@ -1022,7 +1093,7 @@ function commerce_payzen_redirect_form_validate($order, $payment_method) {
 
         return commerce_payzen_process_transaction($order, $payment_method, $payzen_response);
     } else {
-        // order already processed
+        // Order already processed.
         if ($payzen_response->isAcceptedPayment()) {
             return TRUE;
         } else {
@@ -1034,14 +1105,15 @@ function commerce_payzen_redirect_form_validate($order, $payment_method) {
 /**
  * Create or save transaction.
  */
-function commerce_payzen_process_transaction($order, $payment_method, $payzen_response) {
+function commerce_payzen_process_transaction($order, $payment_method, $payzen_response)
+{
     if ($payzen_response->isCancelledPayment()) {
         commerce_payment_redirect_pane_previous_page($order, $payzen_response->getLogMessage());
         return FALSE;
     }
 
     $trans_id = $payzen_response->get('trans_id');
-    if ($payment_method['method_id'] == 'payzen_multi' && ($sequence_number = $payzen_response->get('sequence_number'))) {
+    if ($payment_method['method_id'] === 'payzen_multi' && ($sequence_number = $payzen_response->get('sequence_number'))) {
         $trans_id .= '-' . $sequence_number;
     }
 
@@ -1068,7 +1140,7 @@ function commerce_payzen_process_transaction($order, $payment_method, $payzen_re
     $transaction->currency_code = $currency->getAlpha3();
     $transaction->payload[REQUEST_TIME] = $_REQUEST;
 
-    // set the transaction's statuses based on the IPN's payment_status
+    // Set the transaction's statuses based on the IPN's payment status.
     $transaction->remote_status = $payzen_response->getTransStatus();
 
     if ($payzen_response->isPendingPayment()) {
@@ -1081,8 +1153,8 @@ function commerce_payzen_process_transaction($order, $payment_method, $payzen_re
 
     $transaction->message = $payzen_response->getCompleteMessage();
 
-    if ($payzen_response->get('threeds_status') == 'Y') {
-        $transaction->message .= ' ' . payzen_t('3DS certificate : ') . $payzen_response->get('threeds_cavv') . '.';
+    if ($payzen_response->get('threeds_status') === 'Y') {
+        $transaction->message .= ' ' . payzen_t('3DS certificate: ') . $payzen_response->get('threeds_cavv') . '.';
     }
 
     $transaction->message .= ' Card: @brand, Number: @number<br/>Expiration: @month/@year';
@@ -1093,10 +1165,10 @@ function commerce_payzen_process_transaction($order, $payment_method, $payzen_re
         '@year' => $payzen_response->get('expiry_year')
     );
 
-    // save the transaction information
+    // Save the transaction information.
     commerce_payment_transaction_save($transaction);
 
-    if ($transaction->status == COMMERCE_PAYMENT_STATUS_FAILURE) {
+    if ($transaction->status === COMMERCE_PAYMENT_STATUS_FAILURE) {
         commerce_payment_redirect_pane_previous_page($order, $payzen_response->getLogMessage());
         return FALSE;
     } else {
@@ -1105,12 +1177,13 @@ function commerce_payzen_process_transaction($order, $payment_method, $payzen_re
     }
 }
 
-function commerce_payzen_commerce_payment_order_paid_in_full($order, $transaction) {
+function commerce_payzen_commerce_payment_order_paid_in_full($order, $transaction)
+{
     if (empty($order->data['payment_method'])) {
         return;
     }
 
-    list($method_id, $instance_id) = explode('|', $order->data['payment_method']);
+    list ($method_id, ) = explode('|', $order->data['payment_method']);
 
     $payzen_methods = array('payzen_standard', 'payzen_multi', 'payzen_paypal');
     if (! in_array($method_id, $payzen_methods)) {
@@ -1120,14 +1193,16 @@ function commerce_payzen_commerce_payment_order_paid_in_full($order, $transactio
     commerce_order_status_update($order, 'processing', FALSE, NULL, payzen_t('Order fully paid.'));
 }
 
-function payzen_ctx_mode_options() {
+function payzen_ctx_mode_options()
+{
     return array(
         'TEST' => payzen_t('TEST'),
         'PRODUCTION' => payzen_t('PRODUCTION')
     );
 }
 
-function payzen_language_options() {
+function payzen_language_options()
+{
     $languages = array();
     foreach (PayzenApi::getSupportedLanguages() as $code => $label) {
         $languages[$code] = payzen_t($label);
@@ -1136,22 +1211,25 @@ function payzen_language_options() {
     return $languages;
 }
 
-function payzen_validation_mode_options() {
+function payzen_validation_mode_options()
+{
     return array(
-        '' => payzen_t('Back Office configuration'),
+        '' => payzen_t('PayZen Back Office configuration'),
         '0' => payzen_t('Automatic'),
         '1' => payzen_t('Manual')
     );
 }
 
-function payzen_automatic_forward_options() {
+function payzen_automatic_forward_options()
+{
     return array(
         '0' => payzen_t('No'),
         '1' => payzen_t('Yes')
     );
 }
 
-function payzen_return_mode_options() {
+function payzen_return_mode_options()
+{
     return drupal_map_assoc(array('GET', 'POST'));
 }
 
@@ -1161,6 +1239,7 @@ function payzen_return_mode_options() {
  * @param string $text
  * @param array $args
  */
-function payzen_t($text, array $args = array()) {
+function payzen_t($text, array $args = array())
+{
     return t($text, $args, array('context' => 'commerce_payzen'));
 }
