@@ -34,7 +34,7 @@ function theme_commerce_payzen_backend_multi_options($variables)
 
     $output .= '            <th>' . payzen_t('Count') . '</th>
                             <th>' . payzen_t('Period') . '</th>
-                            <th>' . payzen_t('1st payment') . '</th>
+                            <th>' . payzen_t('1st installment') . '</th>
                             <th></th>
                         </tr>
                     </thead>
