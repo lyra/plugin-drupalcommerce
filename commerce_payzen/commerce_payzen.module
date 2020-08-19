@@ -36,7 +36,7 @@ function commerce_payzen_commerce_payment_method_info()
         'title' => payzen_t('PayZen - Standard payment'),
         'short_title' => payzen_t('PayZen - Standard payment'),
         'display_title' => $display_img . ' <span>' . $display_title . '</span>',
-        'description' => payzen_t('Pay by credit card using PayZen payment platform.'),
+        'description' => payzen_t('Pay by credit card using PayZen payment gateway.'),
         'terminal' => FALSE,
         'offsite' => TRUE,
         'offsite_autoredirect' => TRUE,
@@ -54,7 +54,7 @@ function commerce_payzen_commerce_payment_method_info()
         'title' => payzen_t('PayZen - Payment in installments'),
         'short_title' => payzen_t('PayZen - Payment in installments'),
         'display_title' => $display_img . ' <span>' . $display_title . '</span>',
-        'description' => payzen_t('Pay by credit card in installments with PayZen payment platform.'),
+        'description' => payzen_t('Pay by credit card in installments with PayZen payment gateway.'),
         'terminal' => FALSE,
         'offsite' => TRUE,
         'offsite_autoredirect' => TRUE,
@@ -72,7 +72,7 @@ function commerce_payzen_commerce_payment_method_info()
         'title' => payzen_t('PayZen - Payment with PayPal'),
         'short_title' => payzen_t('PayZen - Payment with PayPal'),
         'display_title' => $display_img . ' <span>' . $display_title . '</span>',
-        'description' => payzen_t('Payment with PayPal using PayZen payment platform.'),
+        'description' => payzen_t('Payment with PayPal using PayZen payment gateway.'),
         'terminal' => FALSE,
         'offsite' => TRUE,
         'offsite_autoredirect' => TRUE,
@@ -150,19 +150,19 @@ function commerce_payzen_settings_module_info()
         ),
         '#children' => '<table><tbody>
             <tr>
-                <td style="width: 200px; text-align:right;">'.payzen_t('Developed by:') . '</td>
-                <td><a href="http://www.lyra-network.com/" target="_blank">Lyra network</a></td>
+                <td style="width: 200px; text-align:right;">' . payzen_t('Developed by:') . '</td>
+                <td><a href="http://www.lyra.com/" target="_blank">Lyra network</a></td>
             </tr>
             <tr>
-                <td style="width: 200px; text-align:right;">'. payzen_t('Contact us:') . '</td>
+                <td style="width: 200px; text-align:right;">' . payzen_t('Contact us:') . '</td>
                 <td><a href="mailto:' . PayzenTools::getDefault('SUPPORT_EMAIL') . '">' . PayzenTools::getDefault('SUPPORT_EMAIL') . '</a></td>
             </tr>
             <tr>
-                <td style="width: 200px; text-align:right;">'. payzen_t('Module version:') . '</td>
+                <td style="width: 200px; text-align:right;">' . payzen_t('Module version:') . '</td>
                 <td>' . PayzenTools::getDefault('PLUGIN_VERSION') . '</td>
             </tr>
             <tr>
-                <td style="width: 200px; text-align:right;">'. payzen_t('Gateway version') . '</td>
+                <td style="width: 200px; text-align:right;">' . payzen_t('Gateway version:') . '</td>
                 <td>' . PayzenTools::getDefault('GATEWAY_VERSION') . '</td>
             </tr>' . $doc_tr . '</tbody></table>'
     );
@@ -178,6 +178,7 @@ function commerce_payzen_gateway_access_settings($settings = NULL)
             'payzen_key_test' => PayzenTools::getDefault('KEY_TEST'),
             'payzen_key_prod' => PayzenTools::getDefault('KEY_PROD'),
             'payzen_ctx_mode' => PayzenTools::getDefault('CTX_MODE'),
+            'payzen_sign_algo' => PayzenTools::getDefault('SIGN_ALGO'),
             'payzen_platform_url' => PayzenTools::getDefault('GATEWAY_URL')
         )
     );
@@ -190,7 +191,7 @@ function commerce_payzen_gateway_access_settings($settings = NULL)
 
     $form['gateway_access'] = array(
         '#type' => 'fieldset',
-        '#title' => payzen_t('Payment gateway access'),
+        '#title' => payzen_t('PAYMENT GATEWAY ACCESS'),
         '#collapsible' => TRUE,
         '#collapsed' => FALSE
     );
@@ -233,6 +234,19 @@ function commerce_payzen_gateway_access_settings($settings = NULL)
 
     if (PayzenTools::$pluginFeatures['qualif']) {
         $form['gateway_access']['payzen_ctx_mode']['#attributes']['disabled'] = 'disabled';
+    }
+
+    $form['gateway_access']['payzen_sign_algo'] = array(
+       '#type' => 'radios',
+       '#title' => payzen_t('Signature algorithm'),
+       '#description' => payzen_t('Algorithm used to compute the payment form signature. Selected algorithm must be the same as one configured in the PayZen Back Office.<br /><b>The HMAC-SHA-256 algorithm should not be activated if it is not yet available in the PayZen Back Office, the feature will be available soon.</b>'),
+       '#options' => payzen_sign_algo_options(),
+       '#default_value' => $settings['gateway_access']['payzen_sign_algo'],
+       '#required' => TRUE
+    );
+
+    if (PayzenTools::$pluginFeatures['shatwo']) {
+        $form['gateway_access']['payzen_sign_algo']['#description'] = preg_replace('#<br /><b>[^<>]+</b>#', '', $form['gateway_access']['payzen_sign_algo']['#description']);
     }
 
     $form['gateway_access']['payzen_ipn_url'] = array(
@@ -450,7 +464,7 @@ function commerce_payzen_standard_settings_form($settings = NULL)
         '#type' => 'select',
         '#multiple' => 'multiple',
         '#title' => payzen_t('Card types'),
-        '#description' => payzen_t('The card type(s) that can be used for the payment. Select none to use platform configuration.'),
+        '#description' => payzen_t('The card type(s) that can be used for the payment. Select none to use gateway configuration.'),
         '#options' => PayzenApi::getSupportedCardTypes(),
         '#default_value' => $selected_cards
     );
@@ -479,7 +493,7 @@ function commerce_payzen_multi_settings_form($settings = NULL)
         '#type' => 'select',
         '#multiple' => 'multiple',
         '#title' => payzen_t('Card types'),
-        '#description' => payzen_t('The card type(s) that can be used for the payment. Select none to use platform configuration.'),
+        '#description' => payzen_t('The card type(s) that can be used for the payment. Select none to use gateway configuration.'),
         '#options' => commerce_payzen_multi_cards(),
         '#default_value' => $selected_cards
     );
@@ -502,8 +516,8 @@ function commerce_payzen_multi_settings_form($settings = NULL)
         '#theme' => 'commerce_payzen_backend_multi_options',
         '#title' => payzen_t('Payment options'),
         '#description' => $cb_avail ?
-            payzen_t('Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label: </b>The option label to display on the frontend. <br /><b>Min. amount: </b>Minimum amount to enable the payment option. <br /><b>Max. amount: </b>Maximum amount to enable the payment option. <br /><b>Contract: </b>ID of the contract to use with the option. <br /><b>Count: </b>Total number of payments. <br /><b>Period: </b>Delay (in days) between payments. <br /><b>1st payment: </b>Amount of first payment, in percentage of total amount. If empty, all payments will have the same amount.') :
-            payzen_t('Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label: </b>The option label to display on the frontend. <br /><b>Min. amount: </b>Minimum amount to enable the payment option. <br /><b>Max. amount: </b>Maximum amount to enable the payment option. <br /><b>Count: </b>Total number of payments. <br /><b>Period: </b>Delay (in days) between payments. <br /><b>1st payment: </b>Amount of first payment, in percentage of total amount. If empty, all payments will have the same amount.'),
+            payzen_t('Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label: </b>The option label to display on the frontend. <br /><b>Min. amount: </b>Minimum amount to enable the payment option. <br /><b>Max. amount: </b>Maximum amount to enable the payment option. <br /><b>Contract: </b>ID of the contract to use with the option. <br /><b>Count: </b>Total number of installments. <br /><b>Period: </b>Delay (in days) between installments. <br /><b>1st installment: </b>Amount of first installment, in percentage of total amount. If empty, all installments will have the same amount.') :
+            payzen_t('Click on &laquo;Add&raquo; button to configure one or more payment options. <br /><b>Label: </b>The option label to display on the frontend. <br /><b>Min. amount: </b>Minimum amount to enable the payment option. <br /><b>Max. amount: </b>Maximum amount to enable the payment option. <br /><b>Count: </b>Total number of installments. <br /><b>Period: </b>Delay (in days) between installments. <br /><b>1st installment: </b>Amount of first installment, in percentage of total amount. If empty, all installments will have the same amount.'),
         '#default_value' => $options,
         '#element_validate' => array('commerce_payzen_multi_settings_options_validate')
     );
@@ -784,7 +798,7 @@ function commerce_payzen_multi_submit_form_submit($payment_method, $pane_form, $
 }
 
 /**
- * Payment method callback: prepare form to redirect to payment platform (single and multiple payment).
+ * Payment method callback: prepare form to redirect to payment gateway (single and multiple payment).
  */
 function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_method)
 {
@@ -804,7 +818,7 @@ function commerce_payzen_redirect_form($form, &$form_state, $order, $payment_met
 
     $settings = $payment_method['settings'];
 
-    // Set payment platform access parameters.
+    // Set payment gateway access parameters.
     foreach ($settings['gateway_access'] as $name => $value) {
         $param_name = substr($name, strpos($name, '_') + 1);
         $payzen_request->set($param_name, $value);
@@ -961,14 +975,21 @@ function commerce_payzen_process_ipn()
         $_POST,
         $settings['gateway_access']['payzen_ctx_mode'],
         $settings['gateway_access']['payzen_key_test'],
-        $settings['gateway_access']['payzen_key_prod']
+        $settings['gateway_access']['payzen_key_prod'],
+        $settings['gateway_access']['payzen_sign_algo']
     );
 
     if (! $payzen_response->isAuthentified()) {
         watchdog(
             'commerce_payzen',
-            'Suspect request sent to commerce_payzen_process_payment, IP: %ip',
-            array('%ip' => $_SERVER['REMOTE_ADDR']),
+            '%ip tries to access commerce_payzen_process_payment without valid signature with parameters: %params.',
+            array('%ip' => $_SERVER['REMOTE_ADDR'], $params => print_r($_POST, true)),
+            WATCHDOG_ERROR
+        );
+
+        watchdog(
+            'commerce_payzen',
+            'Signature algorithm selected in module settings must be the same as one selected in PayZen Back Office.',
             WATCHDOG_ERROR
         );
 
@@ -1032,18 +1053,25 @@ function commerce_payzen_redirect_form_validate($order, $payment_method)
         $_REQUEST,
         $settings['gateway_access']['payzen_ctx_mode'],
         $settings['gateway_access']['payzen_key_test'],
-        $settings['gateway_access']['payzen_key_prod']
+        $settings['gateway_access']['payzen_key_prod'],
+        $settings['gateway_access']['payzen_sign_algo']
     );
 
     if (! $payzen_response->isAuthentified()) {
-        watchdog(
+         watchdog(
             'commerce_payzen',
-            'Suspect request sent to commerce_payzen_redirect_form_validate, IP: %ip',
-            array('%ip' => $_SERVER['REMOTE_ADDR']),
+            '%ip tries to access commerce_payzen_process_payment without valid signature with parameters: %params.',
+            array('%ip' => $_SERVER['REMOTE_ADDR'], $params => print_r($_REQUEST, true)),
             WATCHDOG_ERROR
         );
 
-        drupal_set_message(payzen_t('An error has occured in the payment process.'), 'error');
+        watchdog(
+            'commerce_payzen',
+            'Signature algorithm selected in module settings must be the same as one selected in PayZen Back Office.',
+            WATCHDOG_ERROR
+        );
+
+        drupal_set_message(payzen_t('An error has occurred during the payment process.'), 'error');
         return FALSE;
     }
 
@@ -1055,7 +1083,7 @@ function commerce_payzen_redirect_form_validate($order, $payment_method)
             WATCHDOG_ERROR
         );
 
-        drupal_set_message(payzen_t('An error has occured in the payment process.'), 'error');
+        drupal_set_message(payzen_t('An error has occurred during the payment process.'), 'error');
         return FALSE;
     }
 
@@ -1063,7 +1091,7 @@ function commerce_payzen_redirect_form_validate($order, $payment_method)
         // Form error.
         watchdog('commerce_payzen', $payzen_response->getLogMessage(), array(), WATCHDOG_ERROR);
 
-        drupal_set_message(payzen_t('An error has occured in the payment process.'), 'error');
+        drupal_set_message(payzen_t('An error has occurred during the payment process.'), 'error');
         return FALSE;
     }
 
@@ -1083,7 +1111,7 @@ function commerce_payzen_redirect_form_validate($order, $payment_method)
             if (variable_get('maintenance_mode', FALSE)) {
                 $message = payzen_t('The shop is in maintenance mode. The automatic notification cannot work.');
             } else {
-                $message = payzen_t('The automatic notification has not worked. Have you correctly set up the notification URL in your PayZen Back Office ?');
+                $message = payzen_t('The automatic validation has not worked. Have you correctly set up the notification URL in your PayZen Back Office?');
                 $message .= '<br />';
                 $message .= payzen_t('For understanding the problem, please read the documentation of the module: <br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;To read carefully before going further&raquo;<br />&nbsp;&nbsp;&nbsp;- Chapter &laquo;Server URL settings&raquo;');
             }
@@ -1198,6 +1226,14 @@ function payzen_ctx_mode_options()
     return array(
         'TEST' => payzen_t('TEST'),
         'PRODUCTION' => payzen_t('PRODUCTION')
+    );
+}
+
+function payzen_sign_algo_options()
+{
+    return array(
+        PayzenApi::ALGO_SHA1 => 'SHA-1',
+        PayzenApi::ALGO_SHA256 => 'HMAC-SHA-256'
     );
 }
 

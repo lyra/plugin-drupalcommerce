@@ -1,3 +1,7 @@
+1.3.0, 2020-08-19
+- Enable signature algorithm selection (SHA-1 or HMAC-SHA-256).
+- Added Spanish translation.
+
 1.2.1, 2020-01-20
 - Fix links to plugin configuration documentation.
 - Improve plugin translations.
