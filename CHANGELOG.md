@@ -1,3 +1,7 @@
+2.0.2, 2020-12-02:
+- Bug fix: Avoid error when billing address is not collected.
+- Update translations.
+
 2.0.1, 2019-01-14:
 - Bug fix: siganture error when using special characters as ' and ".
 - Compatibility with Drupal Commerce 2.10 (fix error at the end of the payment).

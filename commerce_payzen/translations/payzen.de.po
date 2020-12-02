@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PayZen for Drupal Commerce (8.x-"
-"2.0.1)\n"
+"2.0.2)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-08 10:35+0100\n"
-"PO-Revision-Date: 2018-11-08 10:35+0100\n"
+"POT-Creation-Date: 2020-12-02 14:59+0100\n"
+"PO-Revision-Date: 2020-12-02 15:02+0100\n"
 "Last-Translator: \n"
 "Language-Team: Lyra Network <support@payzen.eu>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: t;Translation\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:60
@@ -23,139 +23,145 @@ msgid "PAYMENT IN INSTALLMENTS OPTIONS"
 msgstr "RATENZAHLUNG OPTIONEN"
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:65
-msgid "First payment"
-msgstr "Erste Zahlung"
+msgid "First installment"
+msgstr "Erste Rate"
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:66
 msgid ""
-"Amount of first payment, in percentage of total amount. If empty, all "
-"payments will have the same amount."
+"Amount of first installment, in percentage of total amount. If empty, all "
+"installments will have the same amount."
 msgstr ""
-"Betrag der ersten Zahlung ins gesamtes Prozent. Wenn leer, alle Zahlungen "
-"werden den gleichen Betrag haben."
+"Betrag der ersten Rate insgesamtes Prozent. Falls dies nicht angegeben ist, "
+"haben alle Raten den gleichen Betrag."
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:72
-msgid "Number of payments"
-msgstr "Zahl"
+msgid "Count"
+msgstr "Anzahl"
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:73
-msgid "Total number of payments."
-msgstr "Gesamte Zahl von Zahlungen."
+msgid "Total number of installments."
+msgstr "Gesamtanzahl der Raten."
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:79
 msgid "Period"
 msgstr "Zeitraum"
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:80
-msgid "Delay in days between payments."
-msgstr "Zeit in Tages zwischen zwei Zahlungen."
+msgid "Delay (in days) between installments."
+msgstr "Zeitraum zwischen zwei Raten (in Tagen)."
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:86
 msgid ""
 "ATTENTION: The payment in installments feature activation is subject to the "
 "prior agreement of Société Générale.<br />If you enable this feature while "
-"you have not the associated option, an error 10000 – INSTALLMENTS_NOT_ALLOWED or 07 - PAYMENT_CONFIG will occur "
-"and the buyer will not be able to pay."
+"you have not the associated option, an error 10000 – "
+"INSTALLMENTS_NOT_ALLOWED or 07 - PAYMENT_CONFIG will occur and the buyer "
+"will not be able to pay."
 msgstr ""
 "ATTENTION: The payment in installments feature activation is subject to the "
 "prior agreement of Société Générale.<br />If you enable this feature while "
-"you have not the associated option, an error 10000 – INSTALLMENTS_NOT_ALLOWED or 07 - PAYMENT_CONFIG will occur "
-"and the buyer will not be able to pay."
+"you have not the associated option, an error 10000 – "
+"INSTALLMENTS_NOT_ALLOWED or 07 - PAYMENT_CONFIG will occur and the buyer "
+"will not be able to pay."
 
 #: src/Plugin/Commerce/PaymentGateway/Multi.php:134
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:432
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:431
 #, php-format
 msgid "Invalid value « %1$s » for field « %2$s »."
 msgstr "Ungültiger Wert « %1$s » für Feld « %2$s »."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:56
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:58
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:55
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:57
 msgid "Redirection to shop in a few seconds..."
 msgstr "Weiterleitung zum Shop in Kürze..."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:102
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:101
 msgid "MODULE INFORMATION"
 msgstr "MODULINFORMATIONEN"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:106
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:105
 msgid "Developed by"
 msgstr "Entwickelt von"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:111
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:110
 msgid "Contact us"
 msgstr "E-Mail-Adresse"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:121
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:120
 msgid "Module version"
 msgstr "Modulversion"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:126
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:125
 msgid "Gateway version"
 msgstr "Kompatibel mit Zahlungsschnittstelle"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:150
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:148
 msgid "Click to view the module configuration documentation :"
 msgstr "Klicken Sie, um die Modul-Konfigurationsdokumentation zu finden:"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:167
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:166
 msgid "PAYMENT GATEWAY ACCESS"
 msgstr "ZUGANG ZAHLUNGSSCHNITTSTELLE"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:172
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:171
 msgid "Shop ID"
 msgstr "Shop ID"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:173
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:172
 msgid "The identifier provided by PayZen."
 msgstr "Der von PayZen Benutzer."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:183
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:182
 msgid "Key in test mode"
 msgstr "Schlüssel im Testbetrieb"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:184
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:183
 msgid ""
-"Key provided by PayZen for test mode (available in PayZen Back Office)."
+"Key provided by PayZen for test mode (available in PayZen "
+"Back Office)."
 msgstr ""
-"Schlüssel, das von PayZen zu Testzwecken bereitgestellt wird (im PayZen Back Office verfügbar)."
+"Schlüssel, das von PayZen zu Testzwecken bereitgestellt wird (im "
+"PayZen Back Office verfügbar)."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:194
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:193
 msgid "Key in production mode"
 msgstr "Schlüssel im Produktivbetrieb"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:195
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:194
 msgid ""
 "Key provided by PayZen (available in PayZen Back Office "
 "after enabling production mode)."
 msgstr ""
-"Von PayZen bereitgestelltes Schlüssel (im PayZen Back Office verfügbar, nachdem der Produktionsmodus aktiviert wurde)."
+"Von PayZen bereitgestelltes Schlüssel (im PayZen Back "
+"Office verfügbar, nachdem der Produktionsmodus aktiviert wurde)."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:203
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:202
 msgid "Mode"
 msgstr "Modus"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:204
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:203
 msgid "The context mode of this module."
 msgstr "Funktionsweise dieses Moduls."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:206
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:205
 msgid "TEST"
 msgstr "TEST"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:207
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:206
 msgid "PRODUCTION"
 msgstr "PRODUKTION"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:219
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:218
 msgid "Signature algorithm"
 msgstr "Signaturalgorithmus"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:220
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:219
 msgid ""
 "Algorithm used to compute the payment form signature. Selected algorithm "
 "must be the same as one configured in the PayZen Back Office.<br /"
-"><b>The HMAC-SHA-256 algorithm should not be activated if it is not yet available "
-"in the PayZen Back Office, the feature will be available soon.</b>"
+"><b>The HMAC-SHA-256 algorithm should not be activated if it is not yet "
+"available in the PayZen Back Office, the feature will be available "
+"soon.</b>"
 msgstr ""
 "Algorithmus zur Berechnung der Zahlungsformsignatur. Der ausgewählte "
 "Algorithmus muss derselbe sein, wie er im PayZen Back Office.<br /"
@@ -163,11 +169,11 @@ msgstr ""
 "nicht im PayZen Back Office verfügbar ist. Die Funktion wird in "
 "Kürze verfügbar sein.</b>"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:234
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:233
 msgid "Instant Payment Notification URL"
 msgstr "Benachrichtigung-URL"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:237
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:236
 msgid ""
 "URL to copy into your PayZen Back Office > Settings > Notification "
 "rules."
@@ -175,31 +181,31 @@ msgstr ""
 "URL, die Sie in Ihre PayZen Back Office kopieren sollen > "
 "Einstellung > Regeln der Benachrichtigungen."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:244
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:243
 msgid "Payment page URL"
 msgstr "Schnittstellen-URL"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:245
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:244
 msgid "Link to the payment page."
 msgstr "Link zur Zahlung."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:255
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:254
 msgid "PAYMENT PAGE"
 msgstr "ZAHLUNGSSEITE"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:260
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:259
 msgid "Default language"
 msgstr "Standardsprache"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:261
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:260
 msgid "Default language on the payment page."
 msgstr "Standardsprache auf Zahlungsseite."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:269
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:268
 msgid "Available languages"
 msgstr "Verfügbare Sprachen"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:270
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:269
 msgid ""
 "Languages available on the payment page. If you do not select any, all the "
 "supported languages will be available."
@@ -207,11 +213,11 @@ msgstr ""
 "Die Sprache auswählen, die auf die Bezahlungsseite vorgeschlagen werden.Wenn "
 "Sie keine auswählen, werden alle unterstützten Sprachen verfügbar."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:277
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:276
 msgid "Capture delay"
 msgstr "Einzugsfrist"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:278
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:277
 msgid ""
 "The number of days before the bank capture (adjustable in your "
 "PayZen Back Office)."
@@ -219,34 +225,35 @@ msgstr ""
 "Anzahl der Tage bis zum Einzug der Zahlung (Einstellung über Ihr "
 "PayZen Back Office)."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:284
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:283
 msgid "Validation mode"
 msgstr "Bestätigungsmodus"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:285
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:284
 msgid ""
 "If manual is selected, you will have to confirm payments manually in your "
 "PayZen Back Office."
 msgstr ""
-"Bei manueller Eingabe müssen Sie Zahlungen manuell in Ihr PayZen Back Office bestätigen."
+"Bei manueller Eingabe müssen Sie Zahlungen manuell in Ihr PayZen "
+"Back Office bestätigen."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:287
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:286
 msgid "PayZen Back Office configuration"
 msgstr "PayZen Back Office Konfiguration"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:288
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:287
 msgid "Automatic"
 msgstr "Automatisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:289
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:288
 msgid "Manual"
 msgstr "Manuell"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:297
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:296
 msgid "Card Types"
 msgstr "Art der Kreditkarten"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:298
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:297
 msgid ""
 "The card type(s) that can be used for the payment. Select none to use "
 "gateway configuration."
@@ -254,15 +261,15 @@ msgstr ""
 "Wählen Sie die zur Zahlung verfügbaren Kartentypen aus. Nichts auswählen, um "
 "die Einstellungen der Plattform zu verwenden."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:309
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:308
 msgid "SELECTIVE 3DS"
 msgstr "SELEKTIVES 3DS"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:312
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:311
 msgid "Disable 3DS"
 msgstr "3DS deaktivieren"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:314
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:313
 msgid ""
 "Amount below which 3DS will be disabled. Needs subscription to selective 3DS "
 "option. For more information, refer to the module documentation."
@@ -271,15 +278,15 @@ msgstr ""
 "freigeschaltet sein. Weitere Informationen finden Sie in der "
 "Moduldokumentation."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:321
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:320
 msgid "RETURN TO SHOP"
 msgstr "ZURÜCK ZUM SHOP"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:326
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:325
 msgid "Automatic redirection"
 msgstr "Automatische Weiterleitung"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:327
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:326
 msgid ""
 "If enabled, the buyer is automatically redirected to your site at the end of "
 "the payment."
@@ -287,19 +294,19 @@ msgstr ""
 "Falls erlaubt, der Kaufer wurde automatisch am Ende des Zahlungsprozesses "
 "auf Ihre Webseite weitergeleitet."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:329
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:328
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:330
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:329
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:337
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:336
 msgid "Redirection timeout on success"
 msgstr "Erfolgreiche timeout Umleitung"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:338
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:337
 msgid ""
 "Time in seconds (0-300) before the buyer is automatically redirected to your "
 "website after a successful payment."
@@ -307,22 +314,22 @@ msgstr ""
 "Zeit in Sekunden (0-300), bevor der Käufer automatisch zu Ihrer Shop "
 "umgeleitet wird, als die Bezahlung erfolgreich wurde."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:349
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:348
 msgid "Redirection message on success"
 msgstr "Erfolgreiche Meldung vor Umleitung"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:350
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:349
 msgid ""
 "Message displayed on the payment page prior to redirection after a "
 "successful payment."
 msgstr ""
 "Meldung auf die Zahlungsseite vor Umleitung als die Zahlung ist erfolgreich."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:361
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:360
 msgid "Redirection timeout on failure"
 msgstr "Umleitung-Timeout auf Fehler"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:362
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:361
 msgid ""
 "Time in seconds (0-300) before the buyer is automatically redirected to your "
 "website after a declined payment."
@@ -330,11 +337,11 @@ msgstr ""
 "Zeit in Sekunden (0-300) bevor der Käufer automatisch zu Ihrer Shop "
 "umgeleitet wird, als die Bezahlung verweigert wurde."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:373
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:372
 msgid "Redirection message on failure"
 msgstr "Umleitung Timeout auf Fehler"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:374
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:373
 msgid ""
 "Message displayed on the payment page prior to redirection after a declined "
 "payment."
@@ -342,11 +349,11 @@ msgstr ""
 "Meldung angezeigt auf die Zahlungsseite vor Umleitung nach der verweigerten "
 "Zahlung."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:385
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:384
 msgid "Return mode"
 msgstr "Übermittlungs-Modus"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:386
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:385
 msgid ""
 "Method that will be used for transmitting the payment result from the "
 "payment page to your shop."
@@ -354,16 +361,16 @@ msgstr ""
 "Methode, die für die Übermittlung des Zahlungsvorgang benützt wird, kommt "
 "aus der Bezahlungsseite zu Ihrem Geschäft."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:430
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:429
 #, php-format
 msgid "The field « %s » is mandatory."
 msgstr "Feld « %s » ist ein Pflichtfeld."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:536
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:535
 msgid "GOING INTO PRODUCTION"
 msgstr "UMSTELLUNG AUF PRODUKTIONSUMFELD"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:537
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:536
 msgid ""
 "You want to know how to put your shop into production mode, please read "
 "chapters « Proceeding to test phase » and « Shifting the shop to production "
@@ -373,26 +380,27 @@ msgstr ""
 "lesen Sie die Kapitel « Weiter zur Testphase » und « Verschieben des Shops "
 "in den Produktionsumfeld » in der Dokumentation des Moduls."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:559
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:558
 msgid ""
 "The shop is in maintenance mode. The automatic notification cannot work."
 msgstr ""
 "Dieser Shop befindet sich im Wartungsmodus. Es kann keine automatische "
 "Benachrichtigung erstellt werden."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:561
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:560
 msgid ""
 "The automatic validation has not worked. Have you correctly set up the "
 "notification URL in your PayZen Back Office ?"
 msgstr ""
-"Es konnte keine automatische Benachrichtigung erstellt werden. Bitte prüfen Sie, ob die Benachrichtigung-URL in Ihr PayZen Back Office korrekt eingerichtet ist."
+"Es konnte keine automatische Benachrichtigung erstellt werden. Bitte prüfen "
+"Sie, ob die Benachrichtigung-URL in Ihr PayZen Back Office korrekt "
+"eingerichtet ist."
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:563
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:562
 msgid ""
 "For understanding the problem, please read the documentation of the module : "
-"<br />&nbsp;&nbsp;&nbsp;- Chapter « To read carefully before going "
-"further »<br />&nbsp;&nbsp;&nbsp;- Chapter « Notification URL "
-"settings »"
+"<br />&nbsp;&nbsp;&nbsp;- Chapter « To read carefully before going further "
+"»<br />&nbsp;&nbsp;&nbsp;- Chapter « Notification URL settings »"
 msgstr ""
 "Nähere Informationen zu diesem Problem entnehmen Sie bitte der "
 "Moduldokumentation: <br />&nbsp;&nbsp;&nbsp;- Kapitel « Bitte vor dem "
@@ -416,61 +424,61 @@ msgid "Payment with PayPal"
 msgstr "Zahlung mit PayPal"
 
 #: src/Plugin/Commerce/PaymentGateway/Standard.php:18
-msgid "PayZen - One-time payment"
-msgstr "PayZen - Einmalzahlung"
+msgid "PayZen - Standard payment"
+msgstr "PayZen - Standardzahlung"
 
 #: src/Plugin/Commerce/PaymentGateway/Standard.php:19
 msgid "Payment by credit card"
 msgstr "Zahlung mit EC-/Kreditkarte"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "French"
 msgstr "Französisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "German"
 msgstr "Deutsch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "English"
 msgstr "Englisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Chinese"
 msgstr "Chinesisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Italian"
 msgstr "Italienisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Japanese"
 msgstr "Japanisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Portuguese"
 msgstr "Portugiesisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Dutch"
 msgstr "Holländisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Russian"
 msgstr "Russisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Swedish"
 msgstr "Schwedisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Polish"
 msgstr "Polnisch"
 
-#: src/Plugin/Commerce/PaymentGateway/Payzen.php:248
+#: src/Plugin/Commerce/PaymentGateway/Payzen.php:250
 msgid "Turkish"
 msgstr "Türkisch"

@@ -23,8 +23,9 @@ class Tools
 
     const GATEWAY_CODE = 'PayZen';
     const GATEWAY_VERSION = 'V2';
-    const CMS_NAME = 'Drupal_Commerce';
-    const CMS_VERSION = '8.x-2.x';
+    const CMS_IDENTIFIER = 'Drupal_Commerce_8.x-2.x';
+    const PLUGIN_VERSION = '2.0.2';
+    const DOC_PATTERN = '${doc.pattern}';
 
     public static $pluginFeatures = array(
         'qualif' => false,
