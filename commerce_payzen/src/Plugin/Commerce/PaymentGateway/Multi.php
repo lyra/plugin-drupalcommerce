@@ -62,22 +62,22 @@ class Multi extends Payzen
 
         $form['payment_options']['first'] = [
             '#type' => 'textfield',
-            '#title' => $this->t('First payment'),
-            '#description' => $this->t('Amount of first payment, in percentage of total amount. If empty, all payments will have the same amount.'),
+            '#title' => $this->t('First installment'),
+            '#description' => $this->t('Amount of first installment, in percentage of total amount. If empty, all installments will have the same amount.'),
             '#default_value' => $this->configuration['payment_options']['first']
         ];
 
         $form['payment_options']['count'] = [
             '#type' => 'textfield',
-            '#title' => $this->t('Number of payments'),
-            '#description' => $this->t('Total number of payments.'),
+            '#title' => $this->t('Count'),
+            '#description' => $this->t('Total number of installments.'),
             '#default_value' => $this->configuration['payment_options']['count']
         ];
 
         $form['payment_options']['period'] = [
             '#type' => 'textfield',
             '#title' => $this->t('Period'),
-            '#description' => $this->t('Delay in days between payments.'),
+            '#description' => $this->t('Delay (in days) between installments.'),
             '#default_value' => $this->configuration['payment_options']['period']
         ];
 

@@ -111,7 +111,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#markup' => '<a href="mailto:' . Tools::SUPPORT_EMAIL . '">' . Tools::SUPPORT_EMAIL . '</a>'
         ];
 
-        // get current PayZen plugin version
+        // Get current gateway plugin version
         $info = system_get_info('module', 'commerce_payzen');
         $version = substr($info['version'], strpos($info['version'], '-') + 1);
 
@@ -126,9 +126,8 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#markup' => Tools::GATEWAY_VERSION
         ];
 
-        // get documentation links
-        $pattern = Tools::GATEWAY_CODE . '_' . Tools::CMS_NAME . '_' . Tools::CMS_VERSION . '_v' . $version . '*.pdf';
-        $filenames = glob(drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . $pattern);
+        // Get documentation links
+        $filenames = glob(drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . Tools::DOC_PATTERN);
 
         $doc_langs = array(
             'fr' => 'Français',
