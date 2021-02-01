@@ -1,4 +1,4 @@
-Copyright © 2011-2020 Lyra Network.
+Copyright © 2011-2021 Lyra Network.
 
 PayZen for Drupal Commerce is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

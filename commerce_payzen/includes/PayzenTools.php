@@ -20,8 +20,8 @@ class PayzenTools
     private static $SUPPORT_EMAIL = 'support@payzen.eu';
 
     private static $GATEWAY_VERSION = 'V2';
-    private static $CMS_IDENTIFIER = 'Drupal_Commerce_7.x-1.x';
-    private static $PLUGIN_VERSION = '1.3.0';
+    private static $CMS_IDENTIFIER = 'Drupal_Commerce_1.x';
+    private static $PLUGIN_VERSION = '1.3.1';
     private static $DOC_PATTERN = '${doc.pattern}';
 
 
