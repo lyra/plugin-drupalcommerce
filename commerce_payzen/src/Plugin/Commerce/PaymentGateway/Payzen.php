@@ -112,7 +112,12 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         ];
 
         // Get current gateway plugin version
-        $info = system_get_info('module', 'commerce_payzen');
+        if (function_exists('system_get_info')) {
+            $info = system_get_info('module', 'commerce_payzen');
+        } else {
+            $info = \Drupal::service('extension.list.module')->getExtensionInfo('commerce_payzen');
+        }
+
         $version = substr($info['version'], strpos($info['version'], '-') + 1);
 
         $form['module_info']['contrib_version'] = [
@@ -535,7 +540,11 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             $message = '<b><u>' . $this->t('GOING INTO PRODUCTION') . '</u></b>';
             $message .= '<p>' . $this->t('You want to know how to put your shop into production mode, please read chapters « Proceeding to test phase » and « Shifting the shop to production mode » in the documentation of the module.');
 
-            drupal_set_message(Markup::create($message), 'status');
+            if (function_exists('drupal_set_message')) {
+                drupal_set_message(Markup::create($message), 'status');
+            } else {
+                \Drupal::messenger()->addMessage(Markup::create($message), 'status');
+            }
         }
 
         if ($order->getState()->value === 'draft') {
@@ -562,7 +571,11 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                         $message .= $this->t('For understanding the problem, please read the documentation of the module : <br />&nbsp;&nbsp;&nbsp;- Chapter « To read carefully before going further »<br />&nbsp;&nbsp;&nbsp;- Chapter « Notification URL settings »');
                     }
 
-                    drupal_set_message(Markup::create($message), 'warning');
+                    if (function_exists('drupal_set_message')) {
+                        drupal_set_message(Markup::create($message), 'warning');
+                    } else {
+                        \Drupal::messenger()->addMessage(Markup::create($message), 'warning');
+                    }
                 }
             } else {
                 throw new DeclineException($response->getLogMessage());

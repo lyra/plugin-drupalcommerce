@@ -4,12 +4,12 @@ description: Provides PayZen payment services integration for Drupal Commerce.
 package: Commerce (contrib)
 dependencies:
   - commerce_payment
-core: 8.x
 
 # information about project
-version: "8.x-2.0.2"
+version: "8.x-2.0.3"
 core: "8.x"
+core_version_requirement: ^8 || ^9
 project: "commerce_payzen"
-datestamp: "1511970023"
+datestamp: "1612773362"
 interface translation project: commerce_payzen
 interface translation server pattern: modules/commerce_payzen/translations/payzen.%language.po
