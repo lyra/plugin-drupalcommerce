@@ -111,15 +111,20 @@ class PayzenForm extends PaymentOffsiteForm
         // Set misc parameters.
 
         // Get current Drupal Commerce version.
-        $info = system_get_info('module', 'commerce');
-        $version = substr($info['version'], strpos($info['version'], '-') + 1);
+        if (function_exists('system_get_info')) {
+            $info = system_get_info('module', 'commerce');
+        } else {
+            $info = \Drupal::service('extension.list.module')->getExtensionInfo('commerce');
+        }
+
+        $version = \DRUPAL::VERSION . '_' . substr($info['version'], strpos($info['version'], '-') + 1);
 
         $order = $payment->getOrder();
 
         $order_params = [
             'amount' => $currency->convertAmountToInteger($payment->getAmount()->getNumber()),
             'currency' => $currency->getNum(),
-            'contrib' => Tools::CMS_IDENTIFIER . '_'.Tools::PLUGIN_VERSION . '/' . $version . '/' . PHP_VERSION,
+            'contrib' => Tools::CMS_IDENTIFIER . '_' . Tools::PLUGIN_VERSION . '/' . $version . '/' . PHP_VERSION,
             'order_id' => $order->id(),
             'cust_email' => $order->getEmail(),
             'cust_id' => $order->getCustomerId()
