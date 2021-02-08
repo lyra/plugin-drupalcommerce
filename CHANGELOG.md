@@ -1,3 +1,6 @@
+2.0.3, 2020-02-08:
+- Compatibility with Drupal 9.x.
+
 2.0.2, 2020-12-02:
 - Bug fix: Avoid error when billing address is not collected.
 - Update translations.
@@ -10,4 +13,4 @@
 - Fix new signature algorithm name (HMAC-SHA-256).
 
 2.0.0, 2018-06-04:
-- New mdoule compatible with Drupal Commerce 8.x-2.x.
+- New module compatible with Drupal Commerce 8.x-2.x.

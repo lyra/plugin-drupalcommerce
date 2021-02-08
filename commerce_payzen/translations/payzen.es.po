@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PayZen for Drupal Commerce (8.x-"
-"2.0.2)\n"
+"2.0.3)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-02 15:02+0100\n"
-"PO-Revision-Date: 2020-12-02 15:05+0100\n"
+"PO-Revision-Date: 2021-01-31 15:17+0100\n"
 "Last-Translator: \n"
 "Language-Team: Lyra Network <support@payzen.eu>\n"
 "Language: es\n"
@@ -170,7 +170,7 @@ msgstr ""
 
 #: src/Plugin/Commerce/PaymentGateway/Payzen.php:233
 msgid "Instant Payment Notification URL"
-msgstr "URL de notificación de pago instantáneo."
+msgstr "URL de notificación de pago instantáneo"
 
 #: src/Plugin/Commerce/PaymentGateway/Payzen.php:236
 msgid ""

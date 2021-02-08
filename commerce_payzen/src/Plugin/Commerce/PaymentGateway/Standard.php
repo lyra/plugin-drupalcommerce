@@ -15,7 +15,7 @@ namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
  *
  * @CommercePaymentGateway(
  *   id = "payzen_standard",
- *   label = @Translation("PayZen - standard payment"),
+ *   label = @Translation("PayZen - Standard payment"),
  *   display_label = @Translation("Payment by credit card"),
  *   forms = {
  *     "offsite-payment" = "Drupal\commerce_payzen\PluginForm\StandardForm"
