@@ -6,7 +6,7 @@ dependencies:
   - commerce_payment
 
 # information about project
-version: "8.x-2.0.3"
+version: "8.x-2.0.4"
 core: "8.x"
 core_version_requirement: ^8 || ^9
 project: "commerce_payzen"
