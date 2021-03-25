@@ -24,7 +24,6 @@ use Drupal\commerce_price\Price;
 
 abstract class Payzen extends OffsitePaymentGatewayBase
 {
-
     /**
      * {@inheritdoc}
      */
@@ -688,11 +687,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
 
         switch ($response->getTransStatus()) {
             case 'AUTHORISED' :
-            case 'CAPTURE_FAILED' :
             case 'ACCEPTED' :
-                $state = 'authorization';
-                break;
-
             case 'CAPTURED' :
                 $state = 'completed';
                 break;
@@ -716,8 +711,20 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         $payment->setRemoteId($trans_uuid);
         $payment->setRemoteState($response->getTransStatus());
 
-        $currency_code = $response->get('effective_currency');
-        $amount_in_cents = $response->get('effective_amount');
+        $currency_code = null;
+        $amount_in_cents = null;
+
+        if ($this->pluginId === 'payzen_multi') {
+            $currency_code = $response->get('effective_currency');
+            $amount_in_cents = $response->get('effective_amount');
+
+            // Currency in client website is different than gateway currency.
+            if ($response->get('effective_currency') !== $response->get('currency')) {
+                $rate = $response->get('change_rate') ? $response->get('change_rate') : 1;
+                $amount_in_cents = round(($response->get('effective_amount') * $rate), 0);
+                $currency_code = $response->get('currency');
+            }
+        }
 
         if (! $currency_code || ! $amount_in_cents) {
             $currency_code = $response->get('currency');
@@ -728,6 +735,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         $amount = strval($currency->convertAmountToFloat($amount_in_cents));
 
         $payment->setAmount(new Price($amount, $currency->getAlpha3()));
+        $payment->setAuthorizedTime(\Drupal::time()->getRequestTime());
 
         $payment->save();
 

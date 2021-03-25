@@ -1,3 +1,6 @@
+2.0.4, 2021-03-25:
+- Bug fix: Update order total paid amount when payment is completed.
+
 2.0.3, 2020-02-08:
 - Compatibility with Drupal 9.x.
 
@@ -6,7 +9,7 @@
 - Update translations.
 
 2.0.1, 2019-01-14:
-- Bug fix: siganture error when using special characters as ' and ".
+- Bug fix: Siganture error when using special characters as ' and ".
 - Compatibility with Drupal Commerce 2.10 (fix error at the end of the payment).
 - [prodfaq] Fix notice about shifting the shop to production mode.
 - Added Spanish translation.
