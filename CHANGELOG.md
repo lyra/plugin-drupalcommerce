@@ -1,3 +1,6 @@
+2.0.5, 2022-05-05:
+- Update list of supported payment means.
+
 2.0.4, 2021-03-25:
 - Bug fix: Update order total paid amount when payment is completed.
 
