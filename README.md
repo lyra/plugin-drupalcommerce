@@ -1,6 +1,6 @@
 # PayZen for Drupal Commerce
 
-PayZen for Drupal Commerce is an open source plugin that links e-commerce websites based on Drupal Commerce 2 to PayZen secured payment gateway developed by [Lyra Network](https://www.lyra-network.com/).
+PayZen for Drupal Commerce is an open source plugin that links e-commerce websites based on Drupal Commerce 2 to PayZen secured payment gateway developed by [Lyra Network](https://www.lyra.com/).
 
 ## Installation & Upgrade
 
@@ -10,7 +10,7 @@ PayZen for Drupal Commerce is an open source plugin that links e-commerce websit
 
 ## Configuration
 
-- Browse to `Commerce > Configuration > Payment gateways`  menu in Drupal backend.
+- Browse to `Commerce > Configuration > Payment gateways` menu in Drupal backend.
 - Click on `Add payment gateway` button to add a new payment method.
 - Select the desired PayZen method and configure its display name, activation and other options.
 - In the same screen, you should enter your PayZen credentials.
