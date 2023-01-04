@@ -15,9 +15,11 @@ use Drupal\commerce_payment\Exception\PaymentGatewayException;
 use Drupal\commerce_payment\PluginForm\PaymentOffsiteForm;
 use Drupal\commerce_payzen\Tools;
 
+use Drupal\commerce_payzen\Includes\Form\Api as PayzenApi;
+use Drupal\commerce_payzen\Includes\Form\Request as PayzenRequest;
+
 class PayzenForm extends PaymentOffsiteForm
 {
-
     /**
      * {@inheritdoc}
      */
@@ -55,12 +57,10 @@ class PayzenForm extends PaymentOffsiteForm
 
         $configuration = $this->getPluginConfiguration();
 
-        require_once(drupal_get_path('module', 'commerce_payzen') . '/includes/PayzenRequest.php');
+        $request = new PayzenRequest();
 
-        $request = new \PayzenRequest();
-
-        /** @var \PayzenCurrency $currency */
-        $currency = \PayzenApi::findCurrencyByAlphaCode($payment->getAmount()->getCurrencyCode());
+        /** @var \Drupal\commerce_payzen\Includes\Form\PayzenCurrency $currency */
+        $currency = PayzenApi::findCurrencyByAlphaCode($payment->getAmount()->getCurrencyCode());
         if (! $currency) {
             $msg = "The used currency {$payment->getAmount()->getCurrencyCode()} is not supported. PayZen module cannot be used.";
 
@@ -77,7 +77,7 @@ class PayzenForm extends PaymentOffsiteForm
             $request->set($name, $value);
         }
 
-        // return URL
+        // Return URL.
         $request->set('url_return', $form['#return_url']);
 
         // Cancel URL.
@@ -88,7 +88,7 @@ class PayzenForm extends PaymentOffsiteForm
         // Set payment page language.
         $default_lang = $configuration['payment_page']['language'];
         $current_lang = \Drupal::languageManager()->getCurrentLanguage()->getId();
-        $lang = \PayzenApi::isSupportedLanguage($current_lang) ? $current_lang : $default_lang;
+        $lang = PayzenApi::isSupportedLanguage($current_lang) ? $current_lang : $default_lang;
         $request->set('language', $lang);
 
         // Set available languages.
@@ -147,7 +147,7 @@ class PayzenForm extends PaymentOffsiteForm
 
         $moduleHandler = \Drupal::service('module_handler');
         if ($moduleHandler->moduleExists('commerce_shipping')) {
-            // Check if the order references shipments
+            // Check if the order references shipments.
             if ($order->hasField('shipments') && !$order->get('shipments')->isEmpty()) {
                 // Gather the shipping profiles and only send shipping information if
                 // there's only one shipping profile referenced by the shipments.
@@ -188,7 +188,7 @@ class PayzenForm extends PaymentOffsiteForm
 
         $request->setFromArray($order_params);
 
-        // Activate 3DS ?
+        // Activate 3DS?
         $decimal_amount = (int) $payment->getAmount()->getNumber();
         $threeds_mpi = null;
         $threeds_min_amount = $configuration['selective_threeds']['threeds_min_amount'];

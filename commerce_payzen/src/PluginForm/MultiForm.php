@@ -14,14 +14,13 @@ use Drupal\Core\Form\FormStateInterface;
 
 class MultiForm extends PayzenForm
 {
-
     protected function buildPayzenRequest(array $form, FormStateInterface $form_state)
     {
         $request = parent::buildPayzenRequest($form, $form_state);
 
         $configuration = $this->getPluginConfiguration();
 
-        // get mutiple payment options
+        // Get mutiple payment options.
         $options = $configuration['payment_options'];
 
         $amount = $request->get('amount');
