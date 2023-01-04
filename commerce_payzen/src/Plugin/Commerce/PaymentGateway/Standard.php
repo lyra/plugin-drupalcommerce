@@ -10,6 +10,7 @@
  */
 namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
 
+use Drupal\commerce_payzen\Includes\Form\Api as PayzenApi;
 /**
  * Provides the PayZen payment gateway.
  *
@@ -28,12 +29,11 @@ namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
  */
 class Standard extends Payzen
 {
-
     /**
      * {@inheritdoc}
      */
     protected function getSupportedPaymentMeans()
     {
-        return \PayzenApi::getSupportedCardTypes();
+        return PayzenApi::getSupportedCardTypes();
     }
 }

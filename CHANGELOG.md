@@ -1,3 +1,8 @@
+2.0.6, 2023-01-04:
+- Consider IPN on operations from merchant Back Office.
+- Update list of supported payment means.
+- Update list of supported currencies.
+
 2.0.5, 2022-05-05:
 - Update list of supported payment means.
 
@@ -12,7 +17,7 @@
 - Update translations.
 
 2.0.1, 2019-01-14:
-- Bug fix: Siganture error when using special characters as ' and ".
+- Bug fix: Signature error when using special characters as ' and ".
 - Compatibility with Drupal Commerce 2.10 (fix error at the end of the payment).
 - [prodfaq] Fix notice about shifting the shop to production mode.
 - Added Spanish translation.
