@@ -14,7 +14,6 @@ use Drupal\Core\Form\FormStateInterface;
 
 class PaypalForm extends PayzenForm
 {
-
     protected function buildPayzenRequest(array $form, FormStateInterface $form_state)
     {
         $request = parent::buildPayzenRequest($form, $form_state);

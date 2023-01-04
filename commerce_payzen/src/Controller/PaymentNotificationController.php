@@ -23,7 +23,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class PaymentNotificationController implements ContainerInjectionInterface
 {
-
     /**
      * The checkout order manager.
      *
@@ -40,7 +39,6 @@ class PaymentNotificationController implements ContainerInjectionInterface
     {
         $this->entityTypeManager = $entity_type_manager;
     }
-
 
     /**
      * {@inheritdoc}

@@ -12,6 +12,7 @@ namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\commerce_payzen\Tools;
+use Drupal\commerce_payzen\Includes\Form\Api as PayzenApi;
 
 /**
  * Provides payment in installments with the PayZen payment gateway.
@@ -31,7 +32,6 @@ use Drupal\commerce_payzen\Tools;
  */
 class Multi extends Payzen
 {
-
     /**
      * {@inheritdoc}
      */
@@ -53,7 +53,7 @@ class Multi extends Payzen
     {
         $form = parent::buildConfigurationForm($form, $form_state);
 
-        // configure multiple payment options
+        // Configure multiple payment options.
         $form['payment_options'] = [
             '#type' => 'details',
             '#open' => true,
@@ -163,7 +163,7 @@ class Multi extends Payzen
         ];
 
         $cards = [];
-        foreach (\PayzenApi::getSupportedCardTypes() as $code => $label) {
+        foreach (PayzenApi::getSupportedCardTypes() as $code => $label) {
             if (in_array($code, $multi_cards)) {
                 $cards[$code] = $label;
             }

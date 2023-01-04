@@ -22,6 +22,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Drupal\commerce_payzen\Tools;
 use Drupal\commerce_price\Price;
 
+use Drupal\commerce_payzen\Includes\Form\Api as PayzenApi;
+use Drupal\commerce_payzen\Includes\Form\Request as PayzenRequest;
+use Drupal\commerce_payzen\Includes\Form\Response as PayzenResponse;
+
 abstract class Payzen extends OffsitePaymentGatewayBase
 {
     /**
@@ -86,14 +90,12 @@ abstract class Payzen extends OffsitePaymentGatewayBase
     {
         $form = parent::buildConfigurationForm($form, $form_state);
 
-        require_once(drupal_get_path('module', 'commerce_payzen') . '/includes/PayzenApi.php');
-
         $form['#attached']['library'] = 'commerce_payzen/admin';
 
-        // managed in gateway access section
+        // Managed in gateway access section.
         unset($form['mode']);
 
-        // module information
+        // Module information.
         $form['module_info'] = [
             '#type' => 'details',
             '#open' => true,
@@ -110,7 +112,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#markup' => '<a href="mailto:' . Tools::SUPPORT_EMAIL . '">' . Tools::SUPPORT_EMAIL . '</a>'
         ];
 
-        // Get current gateway plugin version
+        // Get current gateway plugin version.
         if (function_exists('system_get_info')) {
             $info = system_get_info('module', 'commerce_payzen');
         } else {
@@ -118,6 +120,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         }
 
         $version = substr($info['version'], strpos($info['version'], '-') + 1);
+        $version = substr($version, strpos($version, '-') + 1);
 
         $form['module_info']['contrib_version'] = [
             '#type' => 'item',
@@ -130,20 +133,20 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#markup' => Tools::GATEWAY_VERSION
         ];
 
-        // Get documentation links
+        // Get documentation links.
         $filenames = glob(drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . Tools::DOC_PATTERN);
 
         $doc_langs = array(
             'fr' => 'Français',
             'en' => 'English',
             'es' => 'Español'
-            // complete when more languages are managed
+            // complete when more languages are managed.
         );
 
         $doc_files = array();
         foreach ($filenames as $filename) {
             $base_filename = basename($filename, '.pdf');
-            $lang = substr($base_filename, -2); // extract language code
+            $lang = substr($base_filename, -2); // Extract language code.
 
             $doc_files[$base_filename . '.pdf'] = $doc_langs[$lang];
         }
@@ -163,7 +166,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             ];
         }
 
-        // payment gateway access
+        // Payment gateway access.
         $form['gateway_access'] = [
             '#type' => 'details',
             '#open' => true,
@@ -250,8 +253,8 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#required' => true
         ];
 
-        // payment page settings
-        $languages = array_map([$this, 't'], \PayzenApi::getSupportedLanguages()); // translate language labels
+        // Payment page settings.
+        $languages = array_map([$this, 't'], PayzenApi::getSupportedLanguages()); // Translate language labels.
 
         $form['payment_page'] = [
             '#type' => 'details',
@@ -303,10 +306,10 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#default_value' => $this->configuration['payment_page']['payment_cards']
         ];
 
-        // prepare case method has payment options
+        // Prepare case method has payment options.
         $form['payment_options'] = [];
 
-        // selective 3DS
+        // Selective 3DS.
         $form['selective_threeds'] = [
             '#type' => 'details',
             '#title' => $this->t('SELECTIVE 3DS')
@@ -318,7 +321,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#default_value' => $this->configuration['selective_threeds']['threeds_min_amount']
         ];
 
-        // return to shop settings
+        // Return to shop settings.
         $form['return_to_shop'] = [
             '#type' => 'details',
             '#title' => $this->t('RETURN TO SHOP')
@@ -408,10 +411,8 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             return;
         }
 
-        require_once(drupal_get_path('module', 'commerce_payzen') . '/includes/PayzenRequest.php');
-
         $grouped_values = $form_state->getValue($form['#parents']);
-        $request = new \PayzenRequest(); // new instance for parameters validation
+        $request = new PayzenRequest(); // new instance for parameters validation
 
         foreach ($grouped_values as $key1 => $group) {
             if (! is_array($group) || empty($group)) {
@@ -452,7 +453,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
     {
         $values = $form_state->getValue($form['#parents']);
 
-        // recover mode param to avoir parent validation errors.
+        // Recover mode param to avoir parent validation errors.
         $keys = $form['#parents'];
         $keys[] = 'mode';
 
@@ -497,13 +498,11 @@ abstract class Payzen extends OffsitePaymentGatewayBase
     {
         parent::onReturn($order, $request);
 
-        require_once(drupal_get_path('module', 'commerce_payzen') . '/includes/PayzenResponse.php');
-
-        // get logger instance
+        // Get logger instance.
         $logger = \Drupal::logger('commerce_payzen');
 
         $params = $request->isMethod('POST') ? $request->request->all() : $request->query->all();
-        $response = new \PayzenResponse(
+        $response = new PayzenResponse(
             $params,
             $this->configuration['gateway_access']['ctx_mode'],
             $this->configuration['gateway_access']['key_test'],
@@ -523,7 +522,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             throw new AuthenticationException();
         }
 
-        // check if existing order
+        // Check if existing order.
         $order = $this->entityTypeManager->getStorage('commerce_order')->load($response->get('order_id'));
         if (empty($order) || ! $order->id()) {
             $logger->error(
@@ -534,7 +533,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             throw new InvalidResponseException();
         }
 
-        // go into production message
+        // Set going into production message.
         if (Tools::$pluginFeatures['prodfaq'] && ($this->configuration['gateway_access']['ctx_mode'] === 'TEST')) {
             $message = '<b><u>' . $this->t('GOING INTO PRODUCTION') . '</u></b>';
             $message .= '<p>' . $this->t('You want to know how to put your shop into production mode, please read chapters « Proceeding to test phase » and « Shifting the shop to production mode » in the documentation of the module.');
@@ -547,7 +546,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         }
 
         if ($order->getState()->value === 'draft') {
-            // order waiting for payment confirmation
+            // Order waiting for payment confirmation.
             $logger->info("Order #{$order->id()} not registered yet or payment retry. Let's save payment result now.");
             $logger->info("Payment results for order #{$order->id()} : " . $response->getLogMessage());
 
@@ -580,7 +579,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 throw new DeclineException($response->getLogMessage());
             }
         } else {
-            // order already processed
+            // Order already processed.
             if (! $response->isAcceptedPayment()) {
                 throw new DeclineException($response->getLogMessage());
             }
@@ -596,13 +595,11 @@ abstract class Payzen extends OffsitePaymentGatewayBase
     {
         parent::onNotify($request);
 
-        require_once(drupal_get_path('module', 'commerce_payzen') . '/includes/PayzenResponse.php');
-
-        // get logger instance
+        // Get logger instance.
         $logger = \Drupal::logger('commerce_payzen');
 
         $params = $request->request->all();
-        $response = new \PayzenResponse(
+        $response = new PayzenResponse(
             $params,
             $this->configuration['gateway_access']['ctx_mode'],
             $this->configuration['gateway_access']['key_test'],
@@ -610,7 +607,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             $this->configuration['gateway_access']['sign_algo']
         );
 
-        // check response authenticity
+        // Check response authenticity.
         if (! $response->isAuthentified()) {
             $logger->error(
                 '%ip tries to access notify script without valid signature with parameters : %params.',
@@ -622,7 +619,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             die($response->getOutputForPlatform('auth_fail'));
         }
 
-        // check if existing order
+        // Check if existing order.
         $order = $this->entityTypeManager->getStorage('commerce_order')->load($response->get('order_id'));
         if (empty($order) || ! $order->id()) {
             $logger->error(
@@ -634,14 +631,14 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         }
 
         if ($order->getState()->value === 'draft') {
-            // order waiting for payment confirmation
+            // Order waiting for payment confirmation.
             $logger->info("Order #{$order->id()} not registered yet or payment retry. Let's save payment result now.");
             $logger->info("Payment results for order #{$order->id()} : " . $response->getLogMessage());
 
             $result = $this->savePayment($order, $response);
 
             if ($result) {
-                // payment succes, complete order
+                // Payment succes, complete order.
                 $order->set('checkout_step', 'complete');
                 $order->unlock();
 
@@ -653,9 +650,21 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 echo($response->getOutputForPlatform('payment_ko'));
             }
         } else {
-            // order already processed
-            if (($order->getState()->value === 'completed') && $response->isAcceptedPayment()) {
-                $this->savePayment($order, $response);
+            // Order already processed.
+            if (($order->getState()->value === 'completed') && ($response->isAcceptedPayment() || $response->get('url_check_src') !== 'PAY')) {
+                $result = $this->savePayment($order, $response);
+
+                if (! $result) {
+                    $payment_storage = $this->entityTypeManager->getStorage('commerce_payment');
+                    $accepted_payments = $payment_storage->loadByProperties(['order_id' => $order->id(), 'state' => array('completed', 'pending', 'refunded', 'partially_refunded')]);
+
+                    if (! $accepted_payments) {
+                        // All order payments are in void state, cancel order.
+                        $order->set('state', 'draft'); // Cannot move order from Complete state to Canceled directly.
+                        $order->getState()->applyTransitionById('cancel');
+                        $order->save();
+                    }
+                }
 
                 die($response->getOutputForPlatform('payment_ok_already_done'));
             } else {
@@ -663,7 +672,6 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             }
         }
     }
-
 
     private function savePayment($order, $response)
     {
@@ -674,7 +682,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         $trans_uuid = $response->get('trans_uuid');
 
         $payment_storage = $this->entityTypeManager->getStorage('commerce_payment');
-        if ($payments = $payment_storage->loadByProperties([ 'order_id' => $order->id(), 'remote_id' => $trans_uuid ])) {
+        if ($payments = $payment_storage->loadByProperties(['order_id' => $order->id(), 'remote_id' => $trans_uuid])) {
             $payment = reset($payments);
         } else {
             $payment = $payment_storage->create([
@@ -683,38 +691,10 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             ]);
         }
 
-        $state = '';
-
-        switch ($response->getTransStatus()) {
-            case 'AUTHORISED' :
-            case 'ACCEPTED' :
-            case 'CAPTURED' :
-                $state = 'completed';
-                break;
-
-            case 'AUTHORISED_TO_VALIDATE' :
-            case 'WAITING_AUTHORISATION_TO_VALIDATE' :
-            case 'WAITING_AUTHORISATION' :
-            case 'UNDER_VERIFICATION' :
-            case 'INITIAL' :
-            case 'WAITING_FOR_PAYMENT' :
-                $state = 'pending';
-                break;
-
-            default:
-                $state = 'voided';
-                break;
-        }
-
-        $payment->setState($state);
-
-        $payment->setRemoteId($trans_uuid);
-        $payment->setRemoteState($response->getTransStatus());
-
         $currency_code = null;
         $amount_in_cents = null;
 
-        if ($this->pluginId === 'payzen_multi') {
+        if ($response->get('effective_currency')) {
             $currency_code = $response->get('effective_currency');
             $amount_in_cents = $response->get('effective_amount');
 
@@ -731,12 +711,49 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             $amount_in_cents = $response->get('amount');
         }
 
-        $currency = \PayzenApi::findCurrencyByNumCode($currency_code);
-        $amount = strval($currency->convertAmountToFloat($amount_in_cents));
+        $state = '';
+        $currency = PayzenApi::findCurrencyByNumCode($currency_code);
+        $amount = new Price(strval($currency->convertAmountToFloat($amount_in_cents)), $currency->getAlpha3());
 
-        $payment->setAmount(new Price($amount, $currency->getAlpha3()));
+        $payment->setRemoteId($trans_uuid);
+        $payment->setRemoteState($response->getTransStatus());
+
+        if ($response->get('operation_type') == 'CREDIT') {
+            $payment->setAmount(new Price('0', $currency->getAlpha3())); // It's a refund, not an actual payment.
+            $payment->setRefundedAmount($amount);
+            $state = 'refunded';
+        } elseif ($response->isAcceptedPayment() && $payment->getAmount() && $amount->lessThan($payment->getAmount())) {
+            // Case of modification of a non-captured payment.
+            $refunded_amount = $payment->getAmount()->subtract($amount);
+            $payment->setRefundedAmount($refunded_amount);
+            $state = 'partially_refunded';
+        } else {
+                $payment->setAmount($amount);
+
+                switch ($response->getTransStatus()) {
+                    case 'AUTHORISED' :
+                    case 'ACCEPTED' :
+                    case 'CAPTURED' :
+                        $state = 'completed';
+                        break;
+
+                    case 'AUTHORISED_TO_VALIDATE' :
+                    case 'WAITING_AUTHORISATION_TO_VALIDATE' :
+                    case 'WAITING_AUTHORISATION' :
+                    case 'UNDER_VERIFICATION' :
+                    case 'INITIAL' :
+                    case 'WAITING_FOR_PAYMENT' :
+                        $state = 'pending';
+                        break;
+
+                    default:
+                        $state = 'voided';
+                        break;
+                }
+        }
+
         $payment->setAuthorizedTime(\Drupal::time()->getRequestTime());
-
+        $payment->setState($state);
         $payment->save();
 
         return $state !== 'voided';

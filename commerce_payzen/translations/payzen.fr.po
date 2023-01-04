@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PayZen for Drupal Commerce (8.x-"
-"2.0.5)\n"
+"2.0.6)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-02 15:05+0100\n"
 "PO-Revision-Date: 2021-01-31 15:16+0100\n"
