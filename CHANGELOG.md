@@ -1,3 +1,7 @@
+2.0.7, 2023-04-26:
+- Bug fix: Update order balance in case of online refund.
+- Improve module documentation management field.
+
 2.0.6, 2023-01-04:
 - Consider IPN on operations from merchant Back Office.
 - Update list of supported payment means.
