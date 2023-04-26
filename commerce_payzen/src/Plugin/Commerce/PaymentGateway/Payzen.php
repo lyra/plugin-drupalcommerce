@@ -134,37 +134,27 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         ];
 
         // Get documentation links.
-        $filenames = glob(drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . Tools::DOC_PATTERN);
-
         $doc_langs = array(
             'fr' => 'Français',
             'en' => 'English',
-            'es' => 'Español'
-            // complete when more languages are managed.
+            'es' => 'Español',
+            'pt' => 'Português'
+            // Complete when more languages are managed.
         );
 
-        $doc_files = array();
-        foreach ($filenames as $filename) {
-            $base_filename = basename($filename, '.pdf');
-            $lang = substr($base_filename, -2); // Extract language code.
+        $docs = '<span class="payzen-doc-links">' . $this->t('Click to view the module configuration documentation: ');
 
-            $doc_files[$base_filename . '.pdf'] = $doc_langs[$lang];
+        foreach (PayzenApi::getOnlineDocUri() as $lang => $docUri) {
+            $docs .= '<a href="' . $docUri . 'drupal-commerce2/sitemap.html" target="_blank">' . $doc_langs[$lang] . '</a>';
         }
 
-        if (! empty($doc_files)) {
-            $doc = '<span class="payzen-doc-links">' . $this->t('Click to view the module configuration documentation :');
-            foreach ($doc_files as $file => $lang) {
-                $doc .= '<a href="' . base_path() . drupal_get_path('module', 'commerce_payzen') . '/installation_doc/' . $file . '" target="_blank">' . $lang . '</a>';
-            }
+        $docs .= '</span>';
 
-            $doc .= '</span>';
-
-            $form['module_info']['doc_links'] = [
-                '#type' => 'item',
-                '#title' => '',
-                '#markup' => $doc
-            ];
-        }
+        $form['module_info']['doc_links'] = [
+            '#type' => 'item',
+            '#title' => '',
+            '#markup' => $docs
+        ];
 
         // Payment gateway access.
         $form['gateway_access'] = [
@@ -664,6 +654,9 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                         $order->getState()->applyTransitionById('cancel');
                         $order->save();
                     }
+                } else {
+                    $payment_order_updater = \Drupal::service('commerce_payment.order_updater');
+                    $payment_order_updater->updateOrder($order, true);
                 }
 
                 die($response->getOutputForPlatform('payment_ok_already_done'));
@@ -717,42 +710,44 @@ abstract class Payzen extends OffsitePaymentGatewayBase
 
         $payment->setRemoteId($trans_uuid);
         $payment->setRemoteState($response->getTransStatus());
+        $timestamp = \Drupal::time()->getRequestTime();
 
         if ($response->get('operation_type') == 'CREDIT') {
             $payment->setAmount(new Price('0', $currency->getAlpha3())); // It's a refund, not an actual payment.
             $payment->setRefundedAmount($amount);
             $state = 'refunded';
+            $payment->setCompletedTime($timestamp);
         } elseif ($response->isAcceptedPayment() && $payment->getAmount() && $amount->lessThan($payment->getAmount())) {
             // Case of modification of a non-captured payment.
             $refunded_amount = $payment->getAmount()->subtract($amount);
             $payment->setRefundedAmount($refunded_amount);
             $state = 'partially_refunded';
         } else {
-                $payment->setAmount($amount);
+            $payment->setAmount($amount);
 
-                switch ($response->getTransStatus()) {
-                    case 'AUTHORISED' :
-                    case 'ACCEPTED' :
-                    case 'CAPTURED' :
-                        $state = 'completed';
-                        break;
+            switch ($response->getTransStatus()) {
+                case 'AUTHORISED' :
+                case 'ACCEPTED' :
+                case 'CAPTURED' :
+                    $state = 'completed';
+                    break;
 
-                    case 'AUTHORISED_TO_VALIDATE' :
-                    case 'WAITING_AUTHORISATION_TO_VALIDATE' :
-                    case 'WAITING_AUTHORISATION' :
-                    case 'UNDER_VERIFICATION' :
-                    case 'INITIAL' :
-                    case 'WAITING_FOR_PAYMENT' :
-                        $state = 'pending';
-                        break;
+                case 'AUTHORISED_TO_VALIDATE' :
+                case 'WAITING_AUTHORISATION_TO_VALIDATE' :
+                case 'WAITING_AUTHORISATION' :
+                case 'UNDER_VERIFICATION' :
+                case 'INITIAL' :
+                case 'WAITING_FOR_PAYMENT' :
+                    $state = 'pending';
+                    break;
 
-                    default:
-                        $state = 'voided';
-                        break;
-                }
+                default:
+                    $state = 'voided';
+                    break;
+            }
         }
 
-        $payment->setAuthorizedTime(\Drupal::time()->getRequestTime());
+        $payment->setAuthorizedTime($timestamp);
         $payment->setState($state);
         $payment->save();
 
