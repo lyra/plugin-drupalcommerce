@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PayZen for Drupal Commerce (8.x-"
-"2.0.6)\n"
+"2.0.7)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-02 15:02+0100\n"
 "PO-Revision-Date: 2021-01-31 15:17+0100\n"
@@ -95,8 +95,8 @@ msgid "Gateway version"
 msgstr "Versión del portal"
 
 #: src/Plugin/Commerce/PaymentGateway/Payzen.php:148
-msgid "Click to view the module configuration documentation :"
-msgstr "Haga clic para ver la documentación de la configuración del módulo:"
+msgid "Click to view the module configuration documentation: "
+msgstr "Haga clic para ver la documentación de la configuración del módulo: "
 
 #: src/Plugin/Commerce/PaymentGateway/Payzen.php:166
 msgid "PAYMENT GATEWAY ACCESS"
