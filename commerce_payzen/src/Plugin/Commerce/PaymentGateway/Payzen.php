@@ -229,7 +229,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#type' => 'item',
             '#title' => $this->t('Instant Payment Notification URL'),
             '#description' => '<span class="payzen-ipn-desc">
-                    <img src="' . base_path() . drupal_get_path('module', 'commerce_payzen') . '/images/warn.png">' .
+                    <img src="' . base_path() . $this->payzen_get_path() . '/images/warn.png">' .
                     $this->t('URL to copy into your PayZen Back Office > Settings > Notification rules.') .
                 '</span>',
             '#markup' => $this->getNotifyUrl()->toString()
@@ -752,5 +752,14 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         $payment->save();
 
         return $state !== 'voided';
+    }
+
+    private function payzen_get_path()
+    {
+        if (function_exists('drupal_get_path')) {
+            return drupal_get_path('module', 'commerce_payzen');
+        }
+
+        return \Drupal::service('extension.list.module')->getPath('commerce_payzen');
     }
 }

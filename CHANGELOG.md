@@ -1,3 +1,8 @@
+2.0.8, 2023-08-24
+- Compatibility with Drupal 10.x.
+- Update list of supported payment means.
+- Update list of supported currencies.
+
 2.0.7, 2023-04-26:
 - Bug fix: Update order balance in case of online refund.
 - Improve module documentation management field.
