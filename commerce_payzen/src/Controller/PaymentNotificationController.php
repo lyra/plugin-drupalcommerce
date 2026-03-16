@@ -8,6 +8,7 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 namespace Drupal\commerce_payzen\Controller;
 
 use Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\SupportsNotificationsInterface;

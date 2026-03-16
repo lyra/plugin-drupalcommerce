@@ -8,6 +8,7 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
 
 use Drupal\Core\Url;
@@ -39,8 +40,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 'key_test' => Tools::KEY_TEST,
                 'key_prod' => Tools::KEY_PROD,
                 'ctx_mode' => Tools::CTX_MODE,
-                'sign_algo' => Tools::SIGN_ALGO,
-                'platform_url' => Tools::GATEWAY_URL
+                'sign_algo' => Tools::SIGN_ALGO
             ],
             'payment_page' => [
                 'language' => Tools::LANGUAGE,
@@ -49,18 +49,13 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 'validation_mode' => '',
                 'payment_cards' => []
             ],
-            'selective_threeds' => [
-                'threeds_min_amount' => ''
-            ],
             'return_to_shop' => [
                 'redirect_enabled' => '0',
                 'redirect_success_timeout' => '5',
                 'redirect_success_message' => $this->t('Redirection to shop in a few seconds...'),
                 'redirect_error_timeout' => '5',
-                'redirect_error_message' => $this->t('Redirection to shop in a few seconds...'),
-                'return_mode' => 'GET'
+                'redirect_error_message' => $this->t('Redirection to shop in a few seconds...')
             ]
-
         ] + parent::defaultConfiguration();
     }
 
@@ -101,36 +96,23 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#open' => true,
             '#title' => $this->t('MODULE INFORMATION')
         ];
+
         $form['module_info']['developed_by'] = [
             '#type' => 'item',
             '#title' => $this->t('Developed by'),
             '#markup' => '<a target="_blank" href="http://www.lyra-network.com">Lyra Network</a>'
         ];
+
         $form['module_info']['contact_us'] = [
             '#type' => 'item',
             '#title' => $this->t('Contact us'),
-            '#markup' => '<a href="mailto:' . Tools::SUPPORT_EMAIL . '">' . Tools::SUPPORT_EMAIL . '</a>'
+            '#markup' => PayzenApi::formatSupportEmails(Tools::SUPPORT_EMAIL, $this->t('Click here'))
         ];
-
-        // Get current gateway plugin version.
-        if (function_exists('system_get_info')) {
-            $info = system_get_info('module', 'commerce_payzen');
-        } else {
-            $info = \Drupal::service('extension.list.module')->getExtensionInfo('commerce_payzen');
-        }
-
-        $version = substr($info['version'], strpos($info['version'], '-') + 1);
-        $version = substr($version, strpos($version, '-') + 1);
 
         $form['module_info']['contrib_version'] = [
             '#type' => 'item',
             '#title' => $this->t('Module version'),
-            '#markup' => $version
-        ];
-        $form['module_info']['gateway_version'] = [
-            '#type' => 'item',
-            '#title' => $this->t('Gateway version'),
-            '#markup' => Tools::GATEWAY_VERSION
+            '#markup' => Tools::PLUGIN_VERSION
         ];
 
         // Get documentation links.
@@ -162,6 +144,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#open' => true,
             '#title' => $this->t('PAYMENT GATEWAY ACCESS')
         ];
+
         $form['gateway_access']['site_id'] = [
             '#type' => 'textfield',
             '#payzen_field' => true,
@@ -193,6 +176,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#attributes' => ['autocomplete' => 'off'],
             '#required' => true
         ];
+
         $form['gateway_access']['ctx_mode'] = [
             '#type' => 'select',
             '#payzen_field' => true,
@@ -234,14 +218,6 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 '</span>',
             '#markup' => $this->getNotifyUrl()->toString()
         ];
-        $form['gateway_access']['platform_url'] = [
-            '#type' => 'textfield',
-            '#payzen_field' => true,
-            '#title' => $this->t('Payment page URL'),
-            '#description' => $this->t('Link to the payment page.'),
-            '#default_value' => $this->configuration['gateway_access']['platform_url'],
-            '#required' => true
-        ];
 
         // Payment page settings.
         $languages = array_map([$this, 't'], PayzenApi::getSupportedLanguages()); // Translate language labels.
@@ -250,6 +226,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#type' => 'details',
             '#title' => $this->t('PAYMENT PAGE')
         ];
+
         $form['payment_page']['language'] = [
             '#type' => 'select',
             '#payzen_field' => true,
@@ -258,6 +235,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#options' => $languages,
             '#default_value' => $this->configuration['payment_page']['language']
         ];
+
         $form['payment_page']['available_languages'] = [
             '#type' => 'select',
             '#payzen_field' => true,
@@ -267,17 +245,21 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             '#options' => $languages,
             '#default_value' => $this->configuration['payment_page']['available_languages']
         ];
+
         $form['payment_page']['capture_delay'] = [
-            '#type' => 'textfield',
+            '#type' => 'number',
             '#payzen_field' => true,
-            '#title' => $this->t('Capture delay'),
+            '#title' => $this->t('Capture delay (if applicable)'),
             '#description' => $this->t('The number of days before the bank capture (adjustable in your PayZen Back Office).'),
-            '#default_value' => $this->configuration['payment_page']['capture_delay']
+            '#default_value' => $this->configuration['payment_page']['capture_delay'],
+            '#min' => 0,
+            '#max' => 999,
         ];
+
         $form['payment_page']['validation_mode'] = [
             '#type' => 'select',
             '#payzen_field' => true,
-            '#title' => $this->t('Validation mode'),
+            '#title' => $this->t('Validation mode (if applicable)'),
             '#description' => $this->t('If manual is selected, you will have to confirm payments manually in your PayZen Back Office.'),
             '#options' => [
                 '' => $this->t('PayZen Back Office configuration'),
@@ -286,6 +268,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             ],
             '#default_value' => $this->configuration['payment_page']['validation_mode']
         ];
+
         $form['payment_page']['payment_cards'] = [
             '#type' => 'select',
             '#payzen_field' => true,
@@ -299,23 +282,12 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         // Prepare case method has payment options.
         $form['payment_options'] = [];
 
-        // Selective 3DS.
-        $form['selective_threeds'] = [
-            '#type' => 'details',
-            '#title' => $this->t('SELECTIVE 3DS')
-        ];
-        $form['selective_threeds']['threeds_min_amount'] = [
-            '#title' => $this->t('Disable 3DS'),
-            '#type' => 'textfield',
-            '#description' => $this->t('Amount below which 3DS will be disabled. Needs subscription to selective 3DS option. For more information, refer to the module documentation.'),
-            '#default_value' => $this->configuration['selective_threeds']['threeds_min_amount']
-        ];
-
         // Return to shop settings.
         $form['return_to_shop'] = [
             '#type' => 'details',
             '#title' => $this->t('RETURN TO SHOP')
         ];
+
         $form['return_to_shop']['redirect_enabled'] = [
             '#type' => 'select',
             '#payzen_field' => true,
@@ -327,8 +299,9 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             ],
             '#default_value' => $this->configuration['return_to_shop']['redirect_enabled']
         ];
+
         $form['return_to_shop']['redirect_success_timeout'] = [
-            '#type' => 'textfield',
+            '#type' => 'number',
             '#payzen_field' => true,
             '#title' => $this->t('Redirection timeout on success'),
             '#description' => $this->t('Time in seconds (0-300) before the buyer is automatically redirected to your website after a successful payment.'),
@@ -337,8 +310,10 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                     ':input[name="configuration[' . $this->pluginId . '][return_to_shop][redirect_enabled]"]' => ['value' => '1']
                 ]
             ],
-            '#default_value' => $this->configuration['return_to_shop']['redirect_success_timeout']
+            '#default_value' => $this->configuration['return_to_shop']['redirect_success_timeout'],
+            '#min' => 0
         ];
+
         $form['return_to_shop']['redirect_success_message'] = [
             '#type' => 'textfield',
             '#payzen_field' => true,
@@ -351,8 +326,9 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             ],
             '#default_value' => $this->configuration['return_to_shop']['redirect_success_message']
         ];
+
         $form['return_to_shop']['redirect_error_timeout'] = [
-            '#type' => 'textfield',
+            '#type' => 'number',
             '#payzen_field' => true,
             '#title' => $this->t('Redirection timeout on failure'),
             '#description' => $this->t('Time in seconds (0-300) before the buyer is automatically redirected to your website after a declined payment.'),
@@ -361,8 +337,10 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                     ':input[name="configuration[' . $this->pluginId . '][return_to_shop][redirect_enabled]"]' => ['value' => '1']
                 ]
             ],
-            '#default_value' => $this->configuration['return_to_shop']['redirect_error_timeout']
+            '#default_value' => $this->configuration['return_to_shop']['redirect_error_timeout'],
+            '#min' => 0
         ];
+
         $form['return_to_shop']['redirect_error_message'] = [
             '#type' => 'textfield',
             '#payzen_field' => true,
@@ -374,17 +352,6 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 ]
             ],
             '#default_value' => $this->configuration['return_to_shop']['redirect_error_message']
-        ];
-        $form['return_to_shop']['return_mode'] = [
-            '#type' => 'select',
-            '#payzen_field' => true,
-            '#title' => $this->t('Return mode'),
-            '#description' => $this->t('Method that will be used for transmitting the payment result from the payment page to your shop.'),
-            '#options' => [
-                'GET' => 'GET',
-                'POST' =>'POST'
-            ],
-            '#default_value' => $this->configuration['return_to_shop']['return_mode']
         ];
 
         return $form;
@@ -442,12 +409,23 @@ abstract class Payzen extends OffsitePaymentGatewayBase
     public function submitConfigurationForm(array &$form, FormStateInterface $form_state)
     {
         $values = $form_state->getValue($form['#parents']);
-
         // Recover mode param to avoir parent validation errors.
         $keys = $form['#parents'];
         $keys[] = 'mode';
 
         $form_state->setValue($keys, $values['gateway_access']['ctx_mode']);
+
+        $cards = $values['payment_page']['payment_cards'] ?? [];
+        if (is_array($cards) && in_array('none', $cards, true)) {
+            $cards = array_filter($cards, function ($v) {
+                return $v !== 'none';
+            });
+
+            $card_path = $form['#parents'];
+            $card_path[] = 'payment_page';
+            $card_path[] = 'payment_cards';
+            $form_state->setValue($card_path, $cards);
+        }
 
         parent::submitConfigurationForm($form, $form_state);
 
@@ -460,25 +438,19 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         $this->configuration['gateway_access']['key_prod'] = $values['gateway_access']['key_prod'];
         $this->configuration['gateway_access']['ctx_mode'] = $values['gateway_access']['ctx_mode'];
         $this->configuration['gateway_access']['sign_algo'] = $values['gateway_access']['sign_algo'];
-        $this->configuration['gateway_access']['platform_url'] = $values['gateway_access']['platform_url'];
 
         $this->configuration['payment_page']['language'] = $values['payment_page']['language'];
         $this->configuration['payment_page']['available_languages'] = $values['payment_page']['available_languages'];
         $this->configuration['payment_page']['capture_delay'] = $values['payment_page']['capture_delay'];
         $this->configuration['payment_page']['validation_mode'] = $values['payment_page']['validation_mode'];
-
-        if (isset($values['payment_page']['payment_cards'])) {
-            $this->configuration['payment_page']['payment_cards'] = $values['payment_page']['payment_cards'];
-        }
-
-        $this->configuration['selective_threeds']['threeds_min_amount'] = $values['selective_threeds']['threeds_min_amount'];
+        $this->configuration['payment_page']['payment_cards'] = $cards;
 
         $this->configuration['return_to_shop']['redirect_enabled'] = $values['return_to_shop']['redirect_enabled'];
         $this->configuration['return_to_shop']['redirect_success_timeout'] = $values['return_to_shop']['redirect_success_timeout'];
         $this->configuration['return_to_shop']['redirect_success_message'] = $values['return_to_shop']['redirect_success_message'];
         $this->configuration['return_to_shop']['redirect_error_timeout'] = $values['return_to_shop']['redirect_error_timeout'];
         $this->configuration['return_to_shop']['redirect_error_message'] = $values['return_to_shop']['redirect_error_message'];
-        $this->configuration['return_to_shop']['return_mode'] = $values['return_to_shop']['return_mode'];
+        $this->configuration['return_to_shop']['return_mode'] = 'GET';
     }
 
     /**
@@ -528,11 +500,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
             $message = '<b><u>' . $this->t('GOING INTO PRODUCTION') . '</u></b>';
             $message .= '<p>' . $this->t('You want to know how to put your shop into production mode, please read chapters « Proceeding to test phase » and « Shifting the shop to production mode » in the documentation of the module.');
 
-            if (function_exists('drupal_set_message')) {
-                drupal_set_message(Markup::create($message), 'status');
-            } else {
-                \Drupal::messenger()->addMessage(Markup::create($message), 'status');
-            }
+            $this->payzen_set_message($message);
         }
 
         if ($order->getState()->value === 'draft') {
@@ -559,11 +527,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                         $message .= $this->t('For understanding the problem, please read the documentation of the module : <br />&nbsp;&nbsp;&nbsp;- Chapter « To read carefully before going further »<br />&nbsp;&nbsp;&nbsp;- Chapter « Notification URL settings »');
                     }
 
-                    if (function_exists('drupal_set_message')) {
-                        drupal_set_message(Markup::create($message), 'warning');
-                    } else {
-                        \Drupal::messenger()->addMessage(Markup::create($message), 'warning');
-                    }
+                    $this->payzen_set_message($message);
                 }
             } else {
                 throw new DeclineException($response->getLogMessage());
@@ -635,10 +599,11 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 $transition = $order->getState()->getWorkflow()->getTransition('place');
                 $order->getState()->applyTransition($transition);
                 $order->save();
-                echo($response->getOutputForPlatform('payment_ok'));
-            } else {
-                echo($response->getOutputForPlatform('payment_ko'));
+
+                die($response->getOutputForPlatform('payment_ok'));
             }
+
+            die($response->getOutputForPlatform('payment_ko'));
         } else {
             // Order already processed.
             if (($order->getState()->value === 'completed') && ($response->isAcceptedPayment() || $response->get('url_check_src') !== 'PAY')) {
@@ -660,9 +625,9 @@ abstract class Payzen extends OffsitePaymentGatewayBase
                 }
 
                 die($response->getOutputForPlatform('payment_ok_already_done'));
-            } else {
-                die($response->getOutputForPlatform('payment_ko_on_order_ok'));
             }
+
+            die($response->getOutputForPlatform('payment_ko_on_order_ok'));
         }
     }
 
@@ -680,7 +645,7 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         } else {
             $payment = $payment_storage->create([
                 'order_id' => $order->id(),
-                'payment_gateway' => $this->entityId
+                'payment_gateway' => $response->getExtInfo('payment_gateway_id')
             ]);
         }
 
@@ -725,25 +690,12 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         } else {
             $payment->setAmount($amount);
 
-            switch ($response->getTransStatus()) {
-                case 'AUTHORISED' :
-                case 'ACCEPTED' :
-                case 'CAPTURED' :
-                    $state = 'completed';
-                    break;
-
-                case 'AUTHORISED_TO_VALIDATE' :
-                case 'WAITING_AUTHORISATION_TO_VALIDATE' :
-                case 'WAITING_AUTHORISATION' :
-                case 'UNDER_VERIFICATION' :
-                case 'INITIAL' :
-                case 'WAITING_FOR_PAYMENT' :
-                    $state = 'pending';
-                    break;
-
-                default:
-                    $state = 'voided';
-                    break;
+            if ($response->isPendingPayment()) {
+                $state = 'pending';
+            } elseif ($response->isAcceptedPayment()) {
+                $state = 'completed';
+            } else {
+                $state = 'voided';
             }
         }
 
@@ -761,5 +713,14 @@ abstract class Payzen extends OffsitePaymentGatewayBase
         }
 
         return \Drupal::service('extension.list.module')->getPath('commerce_payzen');
+    }
+
+    private function payzen_set_message($message)
+    {
+        if (function_exists('drupal_set_message')) {
+            drupal_set_message(Markup::create($message), 'warning');
+        } else {
+            \Drupal::messenger()->addMessage(Markup::create($message), 'warning');
+        }
     }
 }

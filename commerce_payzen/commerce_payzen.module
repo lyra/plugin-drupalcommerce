@@ -8,6 +8,7 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 use Drupal\commerce_payzen\Tools;
 
 function commerce_payzen_commerce_payment_gateway_info_alter(&$definitions)

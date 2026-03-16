@@ -1,4 +1,16 @@
-2.0.8, 2023-08-24
+2.1.0, 2026-03-16:
+- Compatibility with Drupal 11.x.
+- Compatibility with Drupal Commerce 3.x.
+- Update list of supported payment means.
+- Update list of supported currencies.
+- Added portuguese translation.
+- Remove the possibility to configure URL for payment page.
+- Remove 3DS management option.
+- Remove the possibility to configure the return mode.
+- Update translations.
+- Update minimum PHP compatibility to 7.x.
+
+2.0.8, 2023-08-24:
 - Compatibility with Drupal 10.x.
 - Update list of supported payment means.
 - Update list of supported currencies.

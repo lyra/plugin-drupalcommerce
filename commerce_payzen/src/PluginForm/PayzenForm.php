@@ -8,6 +8,7 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 namespace Drupal\commerce_payzen\PluginForm;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -45,6 +46,7 @@ class PayzenForm extends PaymentOffsiteForm
 
         /** @var \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\OffsitePaymentGatewayInterface $payment_gateway_plugin */
         $payment_gateway_plugin = $payment->getPaymentGateway()->getPlugin();
+
         return $payment_gateway_plugin->getConfiguration();
     }
 
@@ -101,38 +103,37 @@ class PayzenForm extends PaymentOffsiteForm
         // Set payment card types.
         $cards = $configuration['payment_page']['payment_cards'];
         if ($cards) {
-            $request->set('payment_cards', is_array($cards) ? implode(';', $cards) : $cards);
+            if (is_array($cards)) {
+                if (in_array('none', $cards, true)) {
+                    $cards = array_filter($cards, function ($v) {
+                        return $v !== 'none';
+                    });
+                }
+
+                $request->set('payment_cards', implode(';', $cards));
+            } elseif ($cards != 'none') {
+                $request->set('payment_cards', $cards);
+            }
         }
 
         // Set other page parameters.
         $request->set('capture_delay', $configuration['payment_page']['capture_delay'] );
         $request->set('validation_mode', $configuration['payment_page']['validation_mode']);
 
-        // Set misc parameters.
-
-        // Get current Drupal Commerce version.
-        if (function_exists('system_get_info')) {
-            $info = system_get_info('module', 'commerce');
-        } else {
-            $info = \Drupal::service('extension.list.module')->getExtensionInfo('commerce');
-        }
-
-        $version = \DRUPAL::VERSION . '_' . substr($info['version'], strpos($info['version'], '-') + 1);
-
+        // Set order parameters.
         $order = $payment->getOrder();
 
         $order_params = [
             'amount' => $currency->convertAmountToInteger($payment->getAmount()->getNumber()),
             'currency' => $currency->getNum(),
-            'contrib' => Tools::CMS_IDENTIFIER . '_' . Tools::PLUGIN_VERSION . '/' . $version . '/' . PHP_VERSION,
+            'contrib' => $this->getContrib(),
             'order_id' => $order->id(),
             'cust_email' => $order->getEmail(),
             'cust_id' => $order->getCustomerId()
-       ];
+        ];
 
+        // Set billing address information.
         $address = $order->getBillingProfile()->get('address')->first();
-
-        // Billing address info.
         if ($address) {
             $order_params += [
                 'cust_first_name' => $address->getGivenName(),
@@ -169,7 +170,7 @@ class PayzenForm extends PaymentOffsiteForm
                     /** @var \Drupal\address\AddressInterface $address */
                     $address = $shipping_profile->address->first();
 
-                    // Shipping address info.
+                    // Set shipping address information.
                     if ($address) {
                         $order_params += [
                             'ship_to_first_name' => $address->getGivenName(),
@@ -190,16 +191,42 @@ class PayzenForm extends PaymentOffsiteForm
 
         // Activate 3DS?
         $decimal_amount = (int) $payment->getAmount()->getNumber();
-        $threeds_mpi = null;
-        $threeds_min_amount = $configuration['selective_threeds']['threeds_min_amount'];
+        $threeds_min_amount = (isset($configuration['selective_threeds'])) ? $configuration['selective_threeds']['threeds_min_amount'] : null;
         if ($threeds_min_amount && ($decimal_amount < $threeds_min_amount)) {
-            $threeds_mpi = '2';
+            $request->set('threeds_mpi', '2');
         }
 
-        $request->set('threeds_mpi', $threeds_mpi);
+        $config_platform_url = (isset($configuration['gateway_access']['platform_url'])) ? $configuration['gateway_access']['platform_url'] : null;
+        $platform_url = ($config_platform_url && ! empty($config_platform_url)) ? $config_platform_url : Tools::GATEWAY_URL;
 
-        $logger->info("Client #{$order->getCustomerId()} will be sent to payment gateway for order #{$order->id()}.");
+        $request->set('platform_url', $platform_url);
+        $request->addExtInfo('payment_gateway_id', $payment->getPaymentGateway()->id());
+
+        $data_to_log = $request->getRequestFieldsArray(true, false);
+
+        $logger->info("Data to be sent to payment gateway for order #{$order->id()}: " . print_r($data_to_log, true));
 
         return $request;
+    }
+
+    private function getContrib()
+    {
+        // Get current Drupal Commerce version.
+        if (function_exists('system_get_info')) {
+            $info = system_get_info('module', 'commerce');
+        } else {
+            $info = \Drupal::service('extension.list.module')->getExtensionInfo('commerce');
+        }
+
+        $version = '';
+        if ($info['version'] != null) {
+            $version = \DRUPAL::VERSION . '_' . substr($info['version'], strpos($info['version'], '-') + 1);
+        } elseif (class_exists(\Composer\InstalledVersions::class)) {
+            if (\Composer\InstalledVersions::isInstalled('drupal/commerce')) {
+                $version = \Composer\InstalledVersions::getPrettyVersion('drupal/commerce');
+            }
+        }
+
+        return Tools::CMS_IDENTIFIER . '_' . Tools::PLUGIN_VERSION . '/' . $version . '/' . PHP_VERSION;
     }
 }

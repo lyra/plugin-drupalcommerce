@@ -8,6 +8,7 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -37,7 +38,7 @@ class Paypal extends Payzen
     {
         $form = parent::buildConfigurationForm($form, $form_state);
 
-        // cannot configure payment cards for PayPal payment
+        // Cannot configure payment cards for PayPal payment.
         unset($form['payment_page']['payment_cards']);
 
         return $form;
