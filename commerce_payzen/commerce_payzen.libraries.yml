@@ -1,5 +1,5 @@
 admin:
-  version: VERSION
-  css:
-    theme:
-      css/commerce_payzen.admin.css: {}
+    version: VERSION
+    css:
+        theme:
+            css/commerce_payzen.admin.css: {}

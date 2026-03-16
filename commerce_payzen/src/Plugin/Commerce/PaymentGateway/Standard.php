@@ -8,9 +8,11 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
 
 use Drupal\commerce_payzen\Includes\Form\Api as PayzenApi;
+
 /**
  * Provides the PayZen payment gateway.
  *
@@ -34,6 +36,6 @@ class Standard extends Payzen
      */
     protected function getSupportedPaymentMeans()
     {
-        return PayzenApi::getSupportedCardTypes();
+        return ['none' => ''] + PayzenApi::getSupportedCardTypes();
     }
 }

@@ -212,24 +212,29 @@ class Api
             'ACCORD_STORE' => 'Cartes Enseignes Partenaires', 'ACCORD_STORE_SB' => 'Cartes Enseignes Partenaires (sandbox)',
             'ALINEA' => 'Carte myalinea', 'ALINEA_CDX' => 'Carte Cadeau Alinéa', 'ALINEA_CDX_SB' => 'Carte Cadeau Alinéa (sandbox)',
             'ALINEA_SB' => 'Carte myalinea (sandbox)', 'ALIPAY' => 'Alipay', 'ALLOBEBE_CDX' => 'Carte Cadeau Allobébé',
-            'ALLOBEBE_CDX_SB' => 'Carte Cadeau Allobébé (sandbox)', 'ALMA' => 'Alma en 1 fois', 'ALMA_10X' => 'Alma in 10 installments',
-            'ALMA_12X' => 'Alma in 12 installments', 'ALMA_2X' => 'Alma in 2 installments', 'ALMA_3X' => 'Alma in 3 installments',
-            'ALMA_4X' => 'Alma in 4 installments', 'APETIZ' => 'Apetiz', 'APPLE_PAY' => 'Apple Pay',
+            'ALLOBEBE_CDX_SB' => 'Carte Cadeau Allobébé (sandbox)', 'ALMA' => 'Alma en 1 fois', 'ALMA_10X' => 'Alma en 10 fois',
+            'ALMA_12X' => 'Alma en 12 fois', 'ALMA_2X' => 'Alma en 2 fois', 'ALMA_3X' => 'Alma en 3 fois',
+            'ALMA_4X' => 'Alma en 4 fois', 'APETIZ' => 'Apetiz', 'APPLE_PAY' => 'Apple Pay',
             'AUCHAN' => 'Carte Auchan', 'AUCHAN_SB' => 'Carte Auchan (sandbox)', 'AURORE-MULTI' => 'Cpay Aurore',
             'BANCONTACT' => 'Bancontact Mistercash', 'BIZUM' => 'Bizum', 'BIZZBEE_CDX' => 'Carte Cadeau Bizzbee',
             'BIZZBEE_CDX_SB' => 'Carte Cadeau Bizzbee (sandbox)', 'BOULANGER' => 'Carte b+',
             'BOULANGER_SB' => 'Carte b+ (sandbox)', 'BRICE_CDX' => 'Carte Cadeau Brice', 'BRICE_CDX_SB' => 'Carte Cadeau Brice (sandbox)',
             'BUT' => 'But', 'CABAL' => 'Cabal', 'CARNET' => 'Carnet', 'CASINO' => 'Banque Casino', 'CA_DO_CARTE' => 'CA DO Carte',
             'CDGP' => 'Carte Privilège', 'CDISCOUNT' => 'CDiscount', 'CHQ_DEJ' => 'Chèque Déjeuner', 'COF3XCB' => 'Cofinoga 3 fois CB',
-            'COF3XCB_SB' => 'Cofinoga 3 fois CB Sandbox', 'COFINOGA' => 'Cofinoga', 'COM_BARRY_CDX' => 'Carte Cadeau Comtesse du Barry',
+            'COF3XCB_SB' => 'Cofinoga 3 fois CB Sandbox', 'COFIDIS_3X_BE' => 'Cofidis en 3 fois', 'COFIDIS_3X_FR' => 'Cofidis en 3 fois',
+            'COFIDIS_4X_ES' => 'Cofidis en 4 vencimientos', 'COFIDIS_4X_FR' => 'Cofidis en 4 fois', 'COFIDIS_DFPAY_FR' => 'Cofidis Pay Later',
+            'COFIDIS_LOAN_BE' => 'Cofidis en 6-12-18 fois', 'COFIDIS_LOAN_CB' => 'Cofidis en 5-12 fois',
+            'COFIDIS_LOAN_ES' => 'Cofidis en 6-12-24 vencimientos', 'COFIDIS_LOAN_FR' => 'Amortissable', 'COFIDIS_LOAN_IT' => 'Cofidis Pagodil',
+            'COFIDIS_PAY_FR' => 'Cofidis Pay', 'COFINOGA' => 'Cofinoga', 'COM_BARRY_CDX' => 'Carte Cadeau Comtesse du Barry',
             'COM_BARRY_CDX_SB' => 'Carte Cadeau Comtesse du Barry (sandbox)', 'CONECS' => 'Conecs', 'CONFORAMA' => 'Conforama',
             'CORA' => 'Cora', 'CORA_BLANCHE' => 'Cora blanche', 'CORA_PREM' => 'Cora Visa Premier', 'CORA_VISA' => 'Cora Visa',
             'CVCO' => 'Chèque-Vacances Connect', 'DINERS' => 'Diners', 'DISCOVER' => 'Discover', 'ECCARD' => 'EC Card',
-            'EDENRED' => 'Ticket Restaurant', 'EDENRED_EC' => 'Ticket EcoCheque', 'EDENRED_SC' => 'Ticket Sport & Culture',
-            'EDENRED_TC' => 'Ticket Compliments', 'EDENRED_TR' => 'Ticket Restaurant', 'ELO' => 'Elo', 'ELV' => 'ELV',
+            'EDENRED' => 'Ticket Restaurant', 'EDENRED_CC' => 'Ticket Cheque Consommation', 'EDENRED_EC' => 'Ticket EcoCheque',
+            'EDENRED_SC' => 'Ticket Sport & Culture', 'EDENRED_TC' => 'Ticket Compliments', 'EDENRED_TR' => 'Ticket Restaurant', 'ELO' => 'Elo',
+            'ELV' => 'ELV', 'FLOA_10X' => 'Floa en 10 fois', 'FLOA_3X' => 'Floa en 3 fois', 'FLOA_4X' => 'Floa en 4 fois', 'FLOA_PAYLATER' => 'Floa Pay Later',
             'FRANFINANCE_3X' => 'Paiement en 3 fois', 'FRANFINANCE_4X' => 'Paiement en 4 fois', 'FULLCB3X' => 'Paiement en 3 fois CB',
             'FULLCB4X' => 'Paiement en 4 fois CB', 'GEMO_CDX' => 'Carte Cadeau Gémo', 'GEMO_CDX_SB' => 'Carte Cadeau Gémo (sandbox)',
-            'GIROPAY' => 'Giropay', 'HIPER' => 'Hiper', 'HIPERCARD' => 'Hipercard', 'IDEAL' => 'iDEAL',
+            'GIROPAY' => 'Giropay', 'GOOGLEPAY' => 'Google Pay', 'HIPER' => 'Hiper', 'HIPERCARD' => 'Hipercard', 'IDEAL' => 'iDEAL',
             'ILLICADO' => 'Carte Illicado', 'ILLICADO_SB' => 'Carte Illicado (sandbox)', 'IP_WIRE' => 'Virement SEPA',
             'IP_WIRE_INST' => 'Virement SEPA Instantané', 'JCB' => 'JCB', 'JOUECLUB_CDX' => 'Carte Cadeau Joué Club',
             'JOUECLUB_CDX_SB' => 'Carte Cadeau Joué Club (sandbox)', 'JULES_CDX' => 'Carte Cadeau Jules',
@@ -240,13 +245,15 @@ class Api
             'NARANJA' => 'Naranja', 'NORAUTO' => 'Carte Norauto option Financement', 'NORAUTO_SB' => 'Carte Norauto option Financement (sandbox)',
             'ONEY' => 'Paiement en 3 ou 4 fois par CB', 'ONEY_10X_12X' => 'Paiement en 10 ou 12 fois Oney',
             'ONEY_3X_4X' => 'Paiement en 3 ou 4 fois Oney', 'ONEY_ENSEIGNE' => 'Cartes enseignes Oney', 'ONEY_PAYLATER' => 'Pay Later Oney',
-            'ONEY_SANDBOX' => 'Paiement en 3 ou 4 fois par CB (sandbox)', 'PAYBOX' => 'Paybox', 'PAYDIREKT' => 'Paydirekt', 'PAYPAL' => 'PayPal',
+            'ONEY_SANDBOX' => 'Paiement en 3 ou 4 fois par CB (sandbox)', 'PASS_BEAU_CDX' => 'Carte Cadeau Passion Beauté',
+            'PASS_BEAU_CDX_SB' => 'Carte Cadeau Passion Beauté (sandbox)', 'PAYBOX' => 'Paybox', 'PAYDIREKT' => 'Paydirekt', 'PAYPAL' => 'PayPal',
+            'PAYPAL_BNPL' => 'PayPal Pay Later', 'PAYPAL_BNPL_SB' => 'PayPal Pay Later Sandbox',
             'PAYPAL_SB' => 'PayPal Sandbox', 'PICWIC' => 'Carte Picwic', 'PICWIC_SB' => 'Carte Picwic (sandbox)',
-            'POSTFINANCE' => 'PostFinance Card', 'POSTFINANCE_EFIN' => 'PostFinance E-Finance', 'PRESTO' => 'Presto',
-            'PRZELEWY24' => 'Przelewy24', 'S-MONEY' => 'S-money', 'SCT' => 'Virement SEPA', 'SDD' => 'Prélèvement SEPA',
+            'POSTFINANCE' => 'PostFinance Card', 'POSTFINANCE_EFIN' => 'PostFinance E-Finance',
+            'PRZELEWY24' => 'Przelewy24', 'S-MONEY' => 'S-money', 'SAMSUNG_PAY' => 'Samsung Pay', 'SCT' => 'Virement SEPA', 'SDD' => 'Prélèvement SEPA',
             'SODEXO' => 'Pass Restaurant', 'SOFICARTE' => 'Soficarte', 'SOFORT_BANKING' => 'Sofort', 'SOROCRED' => 'Sorocred',
-            'SYGMA' => 'Sygma', 'TRUFFAUT_CDX' => 'Carte Cadeau Truffaut', 'UNION_PAY' => 'UnionPay', 'VILLAVERDE' => 'Carte Cadeau VillaVerde',
-            'VILLAVERDE_SB' => 'Carte Cadeau VillaVerde (sandbox)', 'WECHAT' => 'WeChat Pay'
+            'SYGMA' => 'Sygma', 'TRUFFAUT_CDX' => 'Carte Cadeau Truffaut', 'VILLAVERDE' => 'Carte Cadeau VillaVerde',
+            'VILLAVERDE_SB' => 'Carte Cadeau VillaVerde (sandbox)', 'WECHAT' => 'WeChat Pay', 'WERO' => 'Wero'
         );
     }
 
@@ -258,7 +265,6 @@ class Api
     {
         return array(
             'AUTHORISED',
-            'AUTHORISED_TO_VALIDATE', // TODO is this a pending status?
             'CAPTURED',
             'ACCEPTED',
             'PARTIALLY_AUTHORISED'
@@ -279,7 +285,10 @@ class Api
             'UNDER_VERIFICATION',
             'PRE_AUTHORISED',
             'WAITING_FOR_PAYMENT',
-            'PENDING'
+            'AUTHORISED_TO_VALIDATE',
+            'SUSPENDED',
+            'PENDING',
+            'REFUND_TO_RETRY'
         );
     }
 
@@ -289,7 +298,11 @@ class Api
      */
     public static function getCancelledStatuses()
     {
-        return array('ABANDONED');
+        return array(
+            'ABANDONED',
+            'NOT_CREATED',
+            'CANCELLED'
+        );
     }
 
     /**
@@ -298,7 +311,10 @@ class Api
      */
     public static function getToValidateStatuses()
     {
-        return array('WAITING_AUTHORISATION_TO_VALIDATE', 'AUTHORISED_TO_VALIDATE');
+        return array(
+            'WAITING_AUTHORISATION_TO_VALIDATE',
+            'AUTHORISED_TO_VALIDATE'
+        );
     }
 
     /**
@@ -354,34 +370,39 @@ class Api
     }
 
     /**
-     * Format a given list of e-mails separated by commas and render them as HTML links.
-     * @param string $emails
+     * Format a given list of e-mails / URLs separated by commas and render them as HTML links.
+     * @param string $links
      * @return string
      */
-    public static function formatSupportEmails($emails)
+    public static function formatSupportEmails($links, $label = "Click here")
     {
         $formatted = '';
 
-        $parts = explode(', ', $emails);
+        $parts = explode(', ', $links);
         foreach ($parts as $part) {
-            $elts = explode(':', $part);
-            if (count($elts) === 2) {
-                $label = trim($elts[0]) . ': ';
-                $email = $elts[1];
-            } elseif (count($elts) === 1) {
-                $label = '';
-                $email = $elts[0];
+            if (strpos($part, '@')) {
+                $elts = explode(':', $part);
+                if (count($elts) === 2) {
+                    $label = trim($elts[0]) . ': ';
+                    $email = $elts[1];
+                } elseif (count($elts) === 1) {
+                    $label = '';
+                    $email = $elts[0];
+                } else {
+                    throw new \InvalidArgumentException("Invalid support e-mails string passed: {$links}.");
+                }
+
+                $email = trim($email);
+
+                if (! empty($formatted)) {
+                    $formatted .= '<br />';
+                }
+
+                $formatted .= $label . '<a href="mailto:' . $email . '">' . $email . '</a>';
             } else {
-                throw new \InvalidArgumentException("Invalid support e-mails string passed: {$emails}.");
+                $link = trim($part);
+                $formatted .= '<a href="'. $link.'" target="_blank" rel="noopener noreferrer">' . $label . '</a>';
             }
-
-            $email = trim($email);
-
-            if (! empty($formatted)) {
-                $formatted .= '<br />';
-            }
-
-            $formatted .= $label . '<a href="mailto:' . $email . '">' . $email . '</a>';
         }
 
         return $formatted;
@@ -427,5 +448,100 @@ class Api
             'en' => 'https://payzen.io/en-EN/plugins/',
             'es' => 'https://payzen.io/es-ES/plugins/'
         );
+    }
+
+    /**
+     * Check if the payment was successful (waiting confirmation or captured).
+     *
+     * @return bool
+     */
+    public static function isAcceptedPayment($status)
+    {
+        return in_array($status, self::getSuccessStatuses(), true) || self::isPendingPayment($status);
+    }
+
+    /**
+     * Check if the payment is waiting confirmation (successful but the amount has not been
+     * transfered and is not yet guaranteed).
+     *
+     * @return bool
+     */
+    public static function isPendingPayment($status)
+    {
+        return in_array($status, self::getPendingStatuses(), true);
+    }
+
+    /**
+     * Check if the payment process was interrupted by the buyer.
+     *
+     * @return bool
+     */
+    public static function isCancelledPayment($status)
+    {
+        return in_array($status, self::getCancelledStatuses(), true);
+    }
+
+    /**
+     * Check if the payment is to validate manually in the gateway Back Office.
+     *
+     * @return bool
+     */
+    public static function isToValidatePayment($status)
+    {
+        return in_array($status, self::getToValidateStatuses(), true);
+    }
+
+    /**
+     * Return a formatted string to output as a response to the notification URL call.
+     *
+     * @param string $case shortcut code for current situations. Most useful : payment_ok, payment_ko, auth_fail
+     * @param string $extra_message some extra information to output to the payment gateway
+     * @param string $original_encoding some extra information to output to the payment gateway
+     *
+     * @return string
+     */
+    public static function getOutputForGateway($case = '', $extra_message = '', $original_encoding = 'UTF-8')
+    {
+        // Predefined response messages according to case.
+        $cases = array(
+            'payment_ok' => array(true, 'Accepted payment, order has been updated.'),
+            'payment_ko' => array(true, 'Payment failure, order has been cancelled.'),
+            'payment_ko_bis' => array(true, 'Payment failure.'),
+            'payment_ok_already_done' => array(true, 'Accepted payment, already registered.'),
+            'payment_ko_already_done' => array(true, 'Payment failure, already registered.'),
+            'order_not_found' => array(false, 'Order not found.'),
+            'payment_ko_on_order_ok' => array(false, 'Order status does not match the payment result.'),
+            'auth_fail' => array(false, 'An error occurred while computing the signature.'),
+            'empty_cart' => array(false, 'Empty cart detected before order processing.'),
+            'unknown_status' => array(false, 'Unknown order status.'),
+            'amount_error' => array(false, 'Total paid is different from order amount.'),
+            'ok' => array(true, ''),
+            'ko' => array(false, '')
+        );
+
+        $success = array_key_exists($case, $cases) ? $cases[$case][0] : false;
+        $message = array_key_exists($case, $cases) ? $cases[$case][1] : '';
+
+        if (! empty($extra_message)) {
+            $message .= ' ' . $extra_message;
+        }
+
+        $message = str_replace("\n", ' ', $message);
+
+        // Set original CMS encoding to convert if necessary response to send to gateway.
+        $encoding = in_array(strtoupper($original_encoding), self::$SUPPORTED_ENCODINGS, true) ?
+            strtoupper($original_encoding) : 'UTF-8';
+        if ($encoding !== 'UTF-8') {
+            $message = iconv($encoding, 'UTF-8', $message);
+        }
+
+        $content = $success ? 'OK-' : 'KO-';
+        $content .= "$message\n";
+
+        $response = '<span style="display:none">';
+        $response .= htmlspecialchars($content, ENT_COMPAT, 'UTF-8');
+        $response .= '</span>';
+
+        return $response;
     }
 }

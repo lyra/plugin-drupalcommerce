@@ -8,6 +8,7 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 namespace Drupal\commerce_payzen\Plugin\Commerce\PaymentGateway;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -57,12 +58,12 @@ class Multi extends Payzen
         $form['payment_options'] = [
             '#type' => 'details',
             '#open' => true,
-            '#title' => $this->t('PAYMENT IN INSTALLMENTS OPTIONS')
+            '#title' => $this->t('PAYMENT OPTIONS')
         ];
 
         $form['payment_options']['first'] = [
             '#type' => 'textfield',
-            '#title' => $this->t('First installment'),
+            '#title' => $this->t('1st installment'),
             '#description' => $this->t('Amount of first installment, in percentage of total amount. If empty, all installments will have the same amount.'),
             '#default_value' => $this->configuration['payment_options']['first']
         ];
@@ -162,7 +163,7 @@ class Multi extends Payzen
             'PRV_BDP', 'PRV_BDT', 'PRV_OPT', 'PRV_SOC', 'VISA', 'VISA_ELECTRON', 'VPAY'
         ];
 
-        $cards = [];
+        $cards = ['none' => ''];
         foreach (PayzenApi::getSupportedCardTypes() as $code => $label) {
             if (in_array($code, $multi_cards)) {
                 $cards[$code] = $label;

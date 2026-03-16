@@ -8,6 +8,7 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 namespace Drupal\commerce_payzen;
 
 class Tools
@@ -19,13 +20,11 @@ class Tools
     const CTX_MODE = 'TEST';
     const SIGN_ALGO = 'SHA-256';
     const GATEWAY_URL = 'https://secure.payzen.eu/vads-payment/';
-    const SUPPORT_EMAIL = 'support@payzen.eu';
+    const SUPPORT_EMAIL = 'https://payzen.io/fr-FR/support/';
 
     const GATEWAY_CODE = 'PayZen';
-    const GATEWAY_VERSION = 'V2';
-    const CMS_IDENTIFIER = 'Drupal_Commerce_2.x';
-    const PLUGIN_VERSION = '2.0.8';
-    const DOC_PATTERN = '###DOC_PATTERN###';
+    const CMS_IDENTIFIER = 'Drupal_Commerce_2.x-3.x';
+    const PLUGIN_VERSION = '2.1.0';
 
     public static $pluginFeatures = array(
         'qualif' => false,

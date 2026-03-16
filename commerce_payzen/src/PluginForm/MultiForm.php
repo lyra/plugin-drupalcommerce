@@ -8,6 +8,7 @@
  * @copyright Lyra Network
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License (GPL v2)
  */
+
 namespace Drupal\commerce_payzen\PluginForm;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -20,11 +21,12 @@ class MultiForm extends PayzenForm
 
         $configuration = $this->getPluginConfiguration();
 
-        // Get mutiple payment options.
+        // Get payment by installement configured options.
         $options = $configuration['payment_options'];
-
         $amount = $request->get('amount');
         $first = $options['first'] ? round(($options['first'] / 100) * $amount) : null;
+
+        // Set installement options to payment request.
         $request->setMultiPayment($amount, $first, $options['count'], $options['period']);
 
         return $request;
